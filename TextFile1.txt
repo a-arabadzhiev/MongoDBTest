@@ -1,0 +1,19 @@
+using System;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
+namespace MongoDBCRUDExample
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            MongoClient dbClient = new MongoClient("mongodb+srv://aarabadzhiev:#Zabrav1h@cluster0.urc9udb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
+
+            var database = dbClient.GetDatabase("sample_training");
+            var collection = database.GetCollection<BsonDocument>("grades");
+
+        }
+    }
+}
