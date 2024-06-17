@@ -1,11 +1,12 @@
 ﻿
+using System.Globalization;
 using System.Text.Json;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace ATSandboxToken
 {
-    public class AccesToken
+    public class AccessToken
     {
         public string? access_token { get; set; }
         public string? expires { get; set; }
@@ -32,11 +33,13 @@ namespace ATSandboxToken
             //Get values from Json
             string jsonString = AccessTokenRes;
 
-            AccesToken? accesstoken =
-                JsonSerializer.Deserialize<AccesToken>(jsonString);
+            AccessToken? accesstoken =
+                JsonSerializer.Deserialize<AccessToken>(jsonString);
 
-            string expires = accesstoken.expires;
-            string access_token = accesstoken.access_token;
+            //DateTime DateExpires;
+            //DateTime.TryParseExact(accesstoken.expires, "ddd MMM d hh:mm:ss UTC yyyy", null, DateTimeStyles.None, out DateExpires);
+
+            //string access_token = accesstoken.access_token;
 
             //Connect to MongoDB
             const string connectionUri = "mongodb+srv://aarabadzhiev:#Zabrav1h@cluster0.urc9udb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
@@ -50,13 +53,13 @@ namespace ATSandboxToken
             var MongoDBClient = new MongoClient(settings);
 
             var database = MongoDBClient.GetDatabase("C#Test");
-            var MongoDBcollection = database.GetCollection<BsonDocument>("Access Token");
+            var MongoDBcollection = database.GetCollection<BsonDocument>("AccessToken");
 
             //Isert Token values
             var document = new BsonDocument
             {
-                { "access_token", access_token },
-                { "expires", expires}
+                { "access_token", accesstoken.access_token },
+                { "expires", accesstoken.expires}
             };
 
             MongoDBcollection.InsertOne(document);
