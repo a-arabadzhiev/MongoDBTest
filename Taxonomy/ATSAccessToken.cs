@@ -31,30 +31,20 @@ namespace ATSandboxToken
             request.Content = content;
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
+
             string AccessTokenRes = await response.Content.ReadAsStringAsync();
 
             //Get values from Json
-            string jsonString = AccessTokenRes;
-
-            AccessToken? accesstoken =
-                JsonSerializer.Deserialize<AccessToken>(jsonString);
+            AccessToken? accesstoken = JsonSerializer.Deserialize<AccessToken>(AccessTokenRes);
 
             DateTime DateExpires;
             DateTime.TryParseExact(accesstoken.expires, "ddd MMM d hh:mm:ss UTC yyyy", null, DateTimeStyles.None, out DateExpires);
 
-            //string access_token = accesstoken.access_token;
-
             //Connect to MongoDB
             const string connectionUri = "mongodb+srv://aarabadzhiev:#Zabrav1h@cluster0.urc9udb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-
             var settings = MongoClientSettings.FromConnectionString(connectionUri);
-
-            // Set the ServerApi field of the settings object to set the version of the Stable API on the client
             settings.ServerApi = new ServerApi(ServerApiVersion.V1);
-
-            // Create a new client and connect to the server
             var MongoDBClient = new MongoClient(settings);
-
             var database = MongoDBClient.GetDatabase("C#Test");
             var MongoDBcollection = database.GetCollection<BsonDocument>("AccessToken");
 
@@ -66,10 +56,6 @@ namespace ATSandboxToken
             };
 
             MongoDBcollection.InsertOne(document);
-
-            //Check Result
-            var firstDocument = MongoDBcollection.Find(document).FirstOrDefault();
-            Console.WriteLine(firstDocument.ToString());
         }
     }
 }
