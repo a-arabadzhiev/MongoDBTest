@@ -4,6 +4,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using System.Text.Json;
+using static MongoDB.Driver.WriteConcern;
 
 namespace ATTaxonomyVehicleMakes
 {
@@ -17,8 +18,8 @@ namespace ATTaxonomyVehicleMakes
 
         public class VehicleMake
         {
-            [BsonId, BsonElement("_id"), BsonRepresentation(BsonType.ObjectId)]
-            public string? ID { get; set; }
+            //[BsonId, BsonElement("_id"), BsonRepresentation(BsonType.ObjectId)]
+            //public string? ID { get; set; }
 
             [BsonElement("name"), BsonRepresentation(BsonType.String)]
             public string? name { get; set; }
@@ -47,26 +48,36 @@ namespace ATTaxonomyVehicleMakes
             //Get VehicleType
             var MDBclient = new MongoClient("mongodb+srv://aarabadzhiev:#Zabrav1h@cluster0.urc9udb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
             var MDBdatabase = MDBclient.GetDatabase("C#Test");
-            var MBDcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleTypes");
+            var MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleTypes");
 
-            var filter = Builders<BsonDocument>.Filter.Eq("name", "CAR");
-            var vehicleType = MBDcollection.Find(filter);
+            var vehicleType = MDBcollection.Find("{ name: \"Car\" }").Project("{ _id : 0 }").ToList();//Future input Vehicle Type
 
-            Console.Write(vehicleType.ToString());
-            Console.ReadLine();
+            //values.Select(v => BsonSerializer.Deserialize<Property>(v)).ToList();
+            //var vehtyp = new VehicleMake();
 
-            var vehtyp = new VehicleMake();
-            vehtyp = BsonSerializer.Deserialize<VehicleMake>(vehicleType.ToString());
+            //var vehtyp = JsonSerializer.Deserialize<VehicleMake>(vehicleType);
 
-            
-            //vehtyp.name = typ["name"].AsString;
+            var vehtyp = vehicleType.Select(v => BsonSerializer.Deserialize<BsonDocument>(v).ToList());
 
-            Console.Write(vehtyp.ToString());
+            ////foreach (var name in vehtyp) 
+            ////{
+            //Console.WriteLine(vehicleType.ToString());
+            //string? at = Console.ReadLine();
+            ////}
+
+            //Console.WriteLine(at);
+            //Console.ReadLine();
+
+            ////var vt = vehicleType.("name");
+
+
+
+            Console.WriteLine(vehtyp);
             Console.ReadLine();
 
             //Get Auto Trader Vehicle Types
             var advertiserId = "66945";
-            var requestUrl = "https://api-sandbox.autotrader.co.uk/taxonomy/makes?vehicleType=" + vehicleType + "&advertiserId=" + advertiserId;
+            var requestUrl = "https://api-sandbox.autotrader.co.uk/taxonomy/makes?vehicleType=" + "Car" + "&advertiserId=" + advertiserId;
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
             request.Headers.Add("Authorization", "Bearer " + accesstoken.access_token);
