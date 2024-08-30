@@ -11,7 +11,7 @@ namespace ATTaxonomyVehicleTypes
 
         public class JSON
         {
-            public Vehicletype[]? vehicleTypes { get; set; }
+            public List<Vehicletype>? vehicleTypes { get; set; }
         }
 
         public class Vehicletype
@@ -28,9 +28,6 @@ namespace ATTaxonomyVehicleTypes
 
             var at = collection.Find("{}").Sort("{_id: -1}").Limit(1).FirstOrDefault().ToString().Substring(66, 133 );
 
-            //Console.WriteLine(at);
-            //Console.ReadKey();
-
             var advertiserId = "66945";
             var requestUrl = "https://api-sandbox.autotrader.co.uk/taxonomy/vehicleTypes?advertiserId=" + advertiserId;
             var client = new HttpClient();
@@ -43,16 +40,14 @@ namespace ATTaxonomyVehicleTypes
 
             string vt = await response.Content.ReadAsStringAsync();
 
-            //Console.WriteLine(vt);
-            //Console.ReadKey();
+            JSON? data = JsonSerializer.Deserialize<JSON>(
+                json: vt, 
+                options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true} );
 
-            JSON? data = JsonSerializer.Deserialize<JSON>(vt);
-
-            //Console.WriteLine(vt);
-            //Console.ReadKey();
-
-            Console.WriteLine(data);
-            Console.ReadKey();
+            foreach (var vehicleType in data.vehicleTypes)
+            {
+                Console.WriteLine(vehicleType.name);
+            }
         }
     }
 }
