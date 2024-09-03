@@ -3,8 +3,9 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
+using System.Security.Cryptography;
 using System.Text.Json;
-using static MongoDB.Driver.WriteConcern;
+using System.Xml.Linq;
 
 namespace ATTaxonomyVehicleMakes
 {
@@ -16,7 +17,7 @@ namespace ATTaxonomyVehicleMakes
             public string? expires { get; set; }
         }
 
-        public class VehicleMake
+        public class GetVehicleType
         {
             //[BsonId, BsonElement("_id"), BsonRepresentation(BsonType.ObjectId)]
             //public string? ID { get; set; }
@@ -24,6 +25,24 @@ namespace ATTaxonomyVehicleMakes
             [BsonElement("name"), BsonRepresentation(BsonType.String)]
             public string? name { get; set; }
         }
+
+        public class SetVehicleType
+        {
+            public string? name { get; set; }
+        }
+
+
+        public class VehicleMakes
+        {
+            public List<Make>? makes { get; set; }
+        }
+
+        public class Make
+        {
+            public string? makeId { get; set; }
+            public string? name { get; set; }
+        }
+
 
         public static async Task Main()
         {
@@ -52,32 +71,15 @@ namespace ATTaxonomyVehicleMakes
 
             var vehicleType = MDBcollection.Find("{ name: \"Car\" }").Project("{ _id : 0 }").ToList();//Future input Vehicle Type
 
-            //values.Select(v => BsonSerializer.Deserialize<Property>(v)).ToList();
-            //var vehtyp = new VehicleMake();
+            string? vt = vehicleType.Select(v => BsonSerializer.Deserialize<GetVehicleType>(v)).ToJson();
 
-            //var vehtyp = JsonSerializer.Deserialize<VehicleMake>(vehicleType);
+            vt = vt.Replace("[", "").Replace("]", "");
 
-            var vehtyp = vehicleType.Select(v => BsonSerializer.Deserialize<BsonDocument>(v).ToList());
-
-            ////foreach (var name in vehtyp) 
-            ////{
-            //Console.WriteLine(vehicleType.ToString());
-            //string? at = Console.ReadLine();
-            ////}
-
-            //Console.WriteLine(at);
-            //Console.ReadLine();
-
-            ////var vt = vehicleType.("name");
-
-
-
-            Console.WriteLine(vehtyp);
-            Console.ReadLine();
+            SetVehicleType? data = JsonSerializer.Deserialize<SetVehicleType>(vt);
 
             //Get Auto Trader Vehicle Types
             var advertiserId = "66945";
-            var requestUrl = "https://api-sandbox.autotrader.co.uk/taxonomy/makes?vehicleType=" + "Car" + "&advertiserId=" + advertiserId;
+            var requestUrl = "https://api-sandbox.autotrader.co.uk/taxonomy/makes?vehicleType=" + data.name + "&advertiserId=" + advertiserId;
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
             request.Headers.Add("Authorization", "Bearer " + accesstoken.access_token);
@@ -86,28 +88,27 @@ namespace ATTaxonomyVehicleMakes
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
-            string vt = await response.Content.ReadAsStringAsync();
+            string vehicleMake = await response.Content.ReadAsStringAsync();
 
-            //JSON? data = JsonSerializer.Deserialize<JSON>(
-            //    json: vt, 
-            //    options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true} );
+            VehicleMakes? vm = JsonSerializer.Deserialize<VehicleMakes>(
+                json: vehicleMake,
+                options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
-            //Insert Vehicle Types in MongoDB
-            //var MDBclient = new MongoClient("mongodb+srv://aarabadzhiev:#Zabrav1h@cluster0.urc9udb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
-            //var MDBdatabase = MDBclient.GetDatabase("C#Test");
-            var MBDMcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleMakes");
+            MDBcollection = null;
+            MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleMakes");
 
-            //foreach (var vehicleType in data.vehicleTypes)
-            //{
+            foreach (var Make in vm.makes)
+            {
 
-            //    var document = new BsonDocument
-            //    {
-            //        {"name", vehicleType.name}
-            //    };
+                var document = new BsonDocument
+                {
+                    {"makeId", Make.makeId},
+                    {"name", Make.name}
+                };
 
-            //    MBDcollection.InsertOne(document);
+                MDBcollection.InsertOne(document);
 
-            //}
+            }
         }
     }
 }
