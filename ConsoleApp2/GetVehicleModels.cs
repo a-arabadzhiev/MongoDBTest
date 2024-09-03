@@ -36,7 +36,7 @@ namespace ATTaxonomyVehicleModels
 
         public class VehicleModels
         {
-            public List<Model>? model { get; set; }
+            public List<Model>? models { get; set; }
         }
 
         public class Model
@@ -44,10 +44,6 @@ namespace ATTaxonomyVehicleModels
             public string? modelId { get; set; }
             public string? name { get; set; }
         }
-
-
-
-
 
         public static async Task Main()
         {
@@ -80,84 +76,48 @@ namespace ATTaxonomyVehicleModels
                                            .Project("{ _id : 0, name : 0 }")
                                            .ToList();
 
-            //foreach (var makeId in vehicleMake)
-            //{
+            string? vehmake = vehicleMake.Select(v => BsonSerializer.Deserialize<GetVehicleMake>(v)).ToJson();
 
-            string? vm = vehicleMake.Select(v => BsonSerializer.Deserialize<GetVehicleMake>(v)).ToJson();
-
-            //vm = "{\"makeId\":" + vm + "}";
-
-            vm = "{\"makeId\":[{\"makeId\": \"d00ef9d875e8af95d2a090f92732ebd6\"},{\"makeId\": \"32e47866f467460ba397a85c0df37f2d\"}]}";
-
-            //Console.WriteLine(vm);
-            //Console.ReadLine();
+            vehmake = "{\"makeId\":" + vehmake + "}";
 
             SetVehicleMake? data = JsonSerializer.Deserialize<SetVehicleMake>(
-                json: vm
-                //, options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
+                json: vehmake
+                , options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
                 );
-
-            //Console.WriteLine(data.makeId);
-            //Console.ReadLine();
 
             foreach (var makeId in data.makeId)
             {
-                //string sid = makeId.ToString();
+                //Get Auto Trader Vehicle Models
+                var advertiserId = "66945";
+                var requestUrl = "https://api-sandbox.autotrader.co.uk/taxonomy/models?makeId=" + makeId.makeId + "&advertiserId=" + advertiserId;
+                var client = new HttpClient();
+                var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+                request.Headers.Add("Authorization", "Bearer " + accesstoken.access_token);
+                request.Headers.Add("cpntent-type", "application/json");
+                request.Headers.Add("Cookie", "__cf_bm=B6mel2RAr2Y8bJ_YC12yGM72Fz992ZOgK4NdAQIY3qQ-1718109215-1.0.1.1-UBKCntQDCf.gtz4TRb93MxGrFR.aGSkdL8P4mtAD16PxCY1ZzAzjuMOEV3gmMVnclxTq_BvbH7gTIH7Bz6k2BA");
+                var response = await client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
 
-                Makeid? id = JsonSerializer.Deserialize<Makeid>(makeId.ToString());
+                string vehicleModel = await response.Content.ReadAsStringAsync();
 
-                Console.WriteLine(id);
-                Console.ReadLine();
-            }
-            //Console.WriteLine(vehicleMake);
-            //Console.ReadLine();
+                VehicleModels? vehmodel = JsonSerializer.Deserialize<VehicleModels>(
+                    json: vehicleModel,
+                    options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
-            //string? vm = vehicleMake.Select(v => BsonSerializer.Deserialize<GetVehicleMake>(v)).ToJson();
+                MDBcollection = null;
+                MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleModels");
 
-            ////vt = vt.Replace("[", "").Replace("]", "");
-
-            //Console.WriteLine(vm);
-            //Console.ReadLine();
-
-
-
-            /*
-            SetVehicleType? data = JsonSerializer.Deserialize<SetVehicleType>(vt);
-
-            //Get Auto Trader Vehicle Types
-            var advertiserId = "66945"; //models?makeId=&advertiserId=1234
-            var requestUrl = "https://api-sandbox.autotrader.co.uk/taxonomy/models?makeId=" + data.makeId + "&advertiserId=" + advertiserId;
-            var client = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
-            request.Headers.Add("Authorization", "Bearer " + accesstoken.access_token);
-            request.Headers.Add("cpntent-type", "application/json");
-            request.Headers.Add("Cookie", "__cf_bm=B6mel2RAr2Y8bJ_YC12yGM72Fz992ZOgK4NdAQIY3qQ-1718109215-1.0.1.1-UBKCntQDCf.gtz4TRb93MxGrFR.aGSkdL8P4mtAD16PxCY1ZzAzjuMOEV3gmMVnclxTq_BvbH7gTIH7Bz6k2BA");
-            var response = await client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-
-            string vehicleMake = await response.Content.ReadAsStringAsync();
-
-            VehicleMakes? vm = JsonSerializer.Deserialize<VehicleMakes>(
-                json: vehicleMake,
-                options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
-
-            MDBcollection = null;
-            MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleMakes");
-
-            foreach (var Make in vm.makes)
-            {
-
-                var document = new BsonDocument
+                foreach (var Model in vehmodel.models)
                 {
-                    {"makeId", Make.makeId},
-                    {"name", Make.name}
-                };
+                    var document = new BsonDocument
+                    {
+                        {"makeId", Model.modelId},
+                        {"name", Model.name}
+                    };
 
-                MDBcollection.InsertOne(document);
-
-            //*/
-
-            //}
+                    MDBcollection.InsertOne(document);
+                }
+            }
         }
     }
 }

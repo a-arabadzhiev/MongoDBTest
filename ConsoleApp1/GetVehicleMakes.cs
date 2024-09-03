@@ -72,7 +72,7 @@ namespace ATTaxonomyVehicleMakes
 
             SetVehicleType? data = JsonSerializer.Deserialize<SetVehicleType>(vt);
 
-            //Get Auto Trader Vehicle Types
+            //Get Auto Trader Vehicle Makes
             var advertiserId = "66945";
             var requestUrl = "https://api-sandbox.autotrader.co.uk/taxonomy/makes?vehicleType=" + data.name + "&advertiserId=" + advertiserId;
             var client = new HttpClient();
