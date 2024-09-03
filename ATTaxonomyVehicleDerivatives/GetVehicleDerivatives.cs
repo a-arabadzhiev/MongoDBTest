@@ -5,9 +5,9 @@ using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using System.Text.Json;
 
-namespace ATTaxonomyVehicleModels
+namespace ATTaxonomyVehicleDerivatives
 {
-    public class GetVehicleModels
+    public class GetVehicleGenerations
     {
         public class AccessToken
         {
@@ -15,31 +15,33 @@ namespace ATTaxonomyVehicleModels
             public string? expires { get; set; }
         }
 
-        public class GetVehicleMake
+        public class GetVehicleGeneration
         {
-            [BsonElement("makeId"), BsonRepresentation(BsonType.String)]
-            public string? makeId { get; set; }
+            [BsonElement("generationId"), BsonRepresentation(BsonType.String)]
+            public string? generationId { get; set; }
         }
 
-        public class SetVehicleMake
+        public class SetVehicleGeneration
         {
-            public List<Makeid>? makeId { get; set; }
+            public List<Generationid>? generationId { get; set; }
         }
 
-        public class Makeid
+        public class Generationid
         {
-            public string? makeId { get; set; }
+            public string? generationId { get; set; }
         }
 
-        public class VehicleModels
+        public class VehicleDerivative
         {
-            public List<Model>? models { get; set; }
+            public List<Derivative>? derivatives { get; set; }
         }
 
-        public class Model
+        public class Derivative
         {
-            public string? modelId { get; set; }
+            public string? derivativeId { get; set; }
             public string? name { get; set; }
+            public DateOnly introduced { get; set; }
+            public DateOnly discontinued { get; set; }
         }
 
         public static async Task Main()
@@ -62,31 +64,31 @@ namespace ATTaxonomyVehicleModels
             string AccessTokenRes = await ATresponse.Content.ReadAsStringAsync();
             AccessToken? accesstoken = JsonSerializer.Deserialize<AccessToken>(AccessTokenRes);
 
-            //Get VehicleMake
+            //Get VehicleGenerations
             var MDBclient = new MongoClient("mongodb+srv://aarabadzhiev:#Zabrav1h@cluster0.urc9udb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
             var MDBdatabase = MDBclient.GetDatabase("C#Test");
-            var MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleMakes");
+            var MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleGenerations");
 
-            var vehicleMake = MDBcollection
+            var vehicleGeneration = MDBcollection
                                            .Find("{}")
                                            .Sort("{name : 1}")
                                            .Project("{ _id : 0, name : 0 }")
                                            .ToList();
 
-            string? vehmake = vehicleMake.Select(v => BsonSerializer.Deserialize<GetVehicleMake>(v)).ToJson();
+            string? vehgen = vehicleGeneration.Select(v => BsonSerializer.Deserialize<GetVehicleGeneration>(v)).ToJson();
 
-            vehmake = "{\"makeId\":" + vehmake + "}";
+            vehgen = "{\"generationId\":" + vehgen + "}";
 
-            SetVehicleMake? data = JsonSerializer.Deserialize<SetVehicleMake>(
-                json: vehmake
+            SetVehicleGeneration? data = JsonSerializer.Deserialize<SetVehicleGeneration>(
+                json: vehgen
                 , options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
                 );
 
-            foreach (var makeId in data.makeId)
+            foreach (var generationId in data.generationId)
             {
-                //Get Auto Trader Vehicle Models
+                //Get Auto Trader Vehicle Derivatives
                 var advertiserId = "66945";
-                var requestUrl = "https://api-sandbox.autotrader.co.uk/taxonomy/models?makeId=" + makeId.makeId + "&advertiserId=" + advertiserId;
+                var requestUrl = "https://api-sandbox.autotrader.co.uk/taxonomy/derivatives?generationId=" + generationId.generationId;
                 var client = new HttpClient();
                 var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
                 request.Headers.Add("Authorization", "Bearer " + accesstoken.access_token);
@@ -95,21 +97,23 @@ namespace ATTaxonomyVehicleModels
                 var response = await client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
 
-                string vehicleModel = await response.Content.ReadAsStringAsync();
+                string vehicleDerivative = await response.Content.ReadAsStringAsync();
 
-                VehicleModels? vehmodel = JsonSerializer.Deserialize<VehicleModels>(
-                    json: vehicleModel,
+                VehicleDerivative? vehder = JsonSerializer.Deserialize<VehicleDerivative>(
+                    json: vehicleDerivative,
                     options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
                 MDBcollection = null;
-                MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleModels");
+                MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleDerivatives");
 
-                foreach (var Model in vehmodel.models)
+                foreach (var Derivative in vehder.derivatives)
                 {
                     var document = new BsonDocument
                     {
-                        {"modelId", Model.modelId},
-                        {"name", Model.name}
+                        {"derivativeId", Derivative.derivativeId},
+                        {"name", Derivative.name},
+                        {"introduced", Derivative.introduced.ToShortDateString()},
+                        {"discontinued", Derivative.discontinued.ToShortDateString()}
                     };
 
                     MDBcollection.InsertOne(document);

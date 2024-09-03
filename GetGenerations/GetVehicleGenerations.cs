@@ -5,9 +5,9 @@ using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using System.Text.Json;
 
-namespace ATTaxonomyVehicleModels
+namespace ATTaxonomyVehicleGenerations
 {
-    public class GetVehicleModels
+    public class GetVehicleGenerations
     {
         public class AccessToken
         {
@@ -15,30 +15,30 @@ namespace ATTaxonomyVehicleModels
             public string? expires { get; set; }
         }
 
-        public class GetVehicleMake
+        public class GetVehicleModel
         {
-            [BsonElement("makeId"), BsonRepresentation(BsonType.String)]
-            public string? makeId { get; set; }
+            [BsonElement("modelId"), BsonRepresentation(BsonType.String)]
+            public string? modelId { get; set; }
         }
 
-        public class SetVehicleMake
+        public class SetVehicleModel
         {
-            public List<Makeid>? makeId { get; set; }
+            public List<Modelid>? modelId { get; set; }
         }
 
-        public class Makeid
-        {
-            public string? makeId { get; set; }
-        }
-
-        public class VehicleModels
-        {
-            public List<Model>? models { get; set; }
-        }
-
-        public class Model
+        public class Modelid
         {
             public string? modelId { get; set; }
+        }
+
+        public class VehicleGenerations
+        {
+            public List<Generation>? generations { get; set; }
+        }
+
+        public class Generation
+        {
+            public string? generationId { get; set; }
             public string? name { get; set; }
         }
 
@@ -62,31 +62,31 @@ namespace ATTaxonomyVehicleModels
             string AccessTokenRes = await ATresponse.Content.ReadAsStringAsync();
             AccessToken? accesstoken = JsonSerializer.Deserialize<AccessToken>(AccessTokenRes);
 
-            //Get VehicleMake
+            //Get VehicleModels
             var MDBclient = new MongoClient("mongodb+srv://aarabadzhiev:#Zabrav1h@cluster0.urc9udb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
             var MDBdatabase = MDBclient.GetDatabase("C#Test");
-            var MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleMakes");
+            var MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleModels");
 
-            var vehicleMake = MDBcollection
+            var vehicleModel = MDBcollection
                                            .Find("{}")
                                            .Sort("{name : 1}")
                                            .Project("{ _id : 0, name : 0 }")
                                            .ToList();
 
-            string? vehmake = vehicleMake.Select(v => BsonSerializer.Deserialize<GetVehicleMake>(v)).ToJson();
+            string? vehmod = vehicleModel.Select(v => BsonSerializer.Deserialize<GetVehicleModel>(v)).ToJson();
 
-            vehmake = "{\"makeId\":" + vehmake + "}";
+            vehmod = "{\"modelId\":" + vehmod + "}";
 
-            SetVehicleMake? data = JsonSerializer.Deserialize<SetVehicleMake>(
-                json: vehmake
+            SetVehicleModel? data = JsonSerializer.Deserialize<SetVehicleModel>(
+                json: vehmod
                 , options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
                 );
 
-            foreach (var makeId in data.makeId)
+            foreach (var modelId in data.modelId)
             {
-                //Get Auto Trader Vehicle Models
+                //Get Auto Trader Vehicle Generations
                 var advertiserId = "66945";
-                var requestUrl = "https://api-sandbox.autotrader.co.uk/taxonomy/models?makeId=" + makeId.makeId + "&advertiserId=" + advertiserId;
+                var requestUrl = "https://api-sandbox.autotrader.co.uk/taxonomy/generations?modelId=" + modelId.modelId;
                 var client = new HttpClient();
                 var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
                 request.Headers.Add("Authorization", "Bearer " + accesstoken.access_token);
@@ -95,21 +95,21 @@ namespace ATTaxonomyVehicleModels
                 var response = await client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
 
-                string vehicleModel = await response.Content.ReadAsStringAsync();
+                string vehicleGeneration = await response.Content.ReadAsStringAsync();
 
-                VehicleModels? vehmodel = JsonSerializer.Deserialize<VehicleModels>(
-                    json: vehicleModel,
+                VehicleGenerations? vehgen = JsonSerializer.Deserialize<VehicleGenerations>(
+                    json: vehicleGeneration,
                     options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
                 MDBcollection = null;
-                MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleModels");
+                MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleGenerations");
 
-                foreach (var Model in vehmodel.models)
+                foreach (var Generation in vehgen.generations)
                 {
                     var document = new BsonDocument
                     {
-                        {"modelId", Model.modelId},
-                        {"name", Model.name}
+                        {"generationId", Generation.generationId},
+                        {"name", Generation.name}
                     };
 
                     MDBcollection.InsertOne(document);
