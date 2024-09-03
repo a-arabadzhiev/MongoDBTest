@@ -9,7 +9,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATTaxonomyVehicleTypes", "ATTaxonomyVehicleTypes\ATTaxonomyVehicleTypes.csproj", "{AC4A4C05-F1C7-4BCC-9A76-B99AF3A3B9E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ATTaxonomyVehicleMakes", "ConsoleApp1\ATTaxonomyVehicleMakes.csproj", "{FC747A17-1A83-4291-B5AC-C87126CAABBB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATTaxonomyVehicleMakes", "ConsoleApp1\ATTaxonomyVehicleMakes.csproj", "{FC747A17-1A83-4291-B5AC-C87126CAABBB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ATTaxonomyVehicleModels", "ConsoleApp2\ATTaxonomyVehicleModels.csproj", "{1FB5AC3A-0591-4018-8633-F1D4361574B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +27,10 @@ Global
 		{FC747A17-1A83-4291-B5AC-C87126CAABBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC747A17-1A83-4291-B5AC-C87126CAABBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC747A17-1A83-4291-B5AC-C87126CAABBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FB5AC3A-0591-4018-8633-F1D4361574B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FB5AC3A-0591-4018-8633-F1D4361574B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FB5AC3A-0591-4018-8633-F1D4361574B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FB5AC3A-0591-4018-8633-F1D4361574B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

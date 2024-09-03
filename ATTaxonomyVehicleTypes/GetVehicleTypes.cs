@@ -13,7 +13,7 @@ namespace ATTaxonomyVehicleTypes
             public string? expires { get; set; }
         }
 
-        public class JSON
+        public class GetVehicleType
         {
             public List<Vehicletype>? vehicleTypes { get; set; }
         }
@@ -56,7 +56,7 @@ namespace ATTaxonomyVehicleTypes
 
             string vt = await response.Content.ReadAsStringAsync();
 
-            JSON? data = JsonSerializer.Deserialize<JSON>(
+            GetVehicleType? data = JsonSerializer.Deserialize<GetVehicleType>(
                 json: vt, 
                 options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true} );
 

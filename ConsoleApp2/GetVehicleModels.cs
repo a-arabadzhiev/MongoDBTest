@@ -3,11 +3,14 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
+using System.Security.Cryptography;
 using System.Text.Json;
+using System.Xml.Linq;
+using static ATTaxonomyVehicleModels.GetVehicleModels;
 
-namespace ATTaxonomyVehicleMakes
+namespace ATTaxonomyVehicleModels
 {
-    public class GetVehicleMakes
+    public class GetVehicleModels
     {
         public class AccessToken
         {
@@ -15,28 +18,35 @@ namespace ATTaxonomyVehicleMakes
             public string? expires { get; set; }
         }
 
-        public class GetVehicleType
+        public class GetVehicleMake
         {
-            [BsonElement("name"), BsonRepresentation(BsonType.String)]
-            public string? name { get; set; }
+            [BsonElement("makeId"), BsonRepresentation(BsonType.String)]
+            public string? makeId { get; set; }
         }
 
-        public class SetVehicleType
+        public class SetVehicleMake
         {
-            public string? name { get; set; }
+            public List<Makeid>? makeId { get; set; }
         }
 
-
-        public class VehicleMakes
-        {
-            public List<Make>? makes { get; set; }
-        }
-
-        public class Make
+        public class Makeid
         {
             public string? makeId { get; set; }
+        }
+
+        public class VehicleModels
+        {
+            public List<Model>? model { get; set; }
+        }
+
+        public class Model
+        {
+            public string? modelId { get; set; }
             public string? name { get; set; }
         }
+
+
+
 
 
         public static async Task Main()
@@ -59,22 +69,64 @@ namespace ATTaxonomyVehicleMakes
             string AccessTokenRes = await ATresponse.Content.ReadAsStringAsync();
             AccessToken? accesstoken = JsonSerializer.Deserialize<AccessToken>(AccessTokenRes);
 
-            //Get VehicleType
+            //Get VehicleMake
             var MDBclient = new MongoClient("mongodb+srv://aarabadzhiev:#Zabrav1h@cluster0.urc9udb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
             var MDBdatabase = MDBclient.GetDatabase("C#Test");
-            var MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleTypes");
+            var MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleMakes");
 
-            var vehicleType = MDBcollection.Find("{ name: \"Car\" }").Project("{ _id : 0 }").ToList();//Future input Vehicle Type
+            var vehicleMake = MDBcollection
+                                           .Find("{}")
+                                           .Sort("{name : 1}")
+                                           .Project("{ _id : 0, name : 0 }")
+                                           .ToList();
 
-            string? vt = vehicleType.Select(v => BsonSerializer.Deserialize<GetVehicleType>(v)).ToJson();
+            //foreach (var makeId in vehicleMake)
+            //{
 
-            vt = vt.Replace("[", "").Replace("]", "");
+            string? vm = vehicleMake.Select(v => BsonSerializer.Deserialize<GetVehicleMake>(v)).ToJson();
 
+            //vm = "{\"makeId\":" + vm + "}";
+
+            vm = "{\"makeId\":[{\"makeId\": \"d00ef9d875e8af95d2a090f92732ebd6\"},{\"makeId\": \"32e47866f467460ba397a85c0df37f2d\"}]}";
+
+            //Console.WriteLine(vm);
+            //Console.ReadLine();
+
+            SetVehicleMake? data = JsonSerializer.Deserialize<SetVehicleMake>(
+                json: vm
+                //, options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
+                );
+
+            //Console.WriteLine(data.makeId);
+            //Console.ReadLine();
+
+            foreach (var makeId in data.makeId)
+            {
+                //string sid = makeId.ToString();
+
+                Makeid? id = JsonSerializer.Deserialize<Makeid>(makeId.ToString());
+
+                Console.WriteLine(id);
+                Console.ReadLine();
+            }
+            //Console.WriteLine(vehicleMake);
+            //Console.ReadLine();
+
+            //string? vm = vehicleMake.Select(v => BsonSerializer.Deserialize<GetVehicleMake>(v)).ToJson();
+
+            ////vt = vt.Replace("[", "").Replace("]", "");
+
+            //Console.WriteLine(vm);
+            //Console.ReadLine();
+
+
+
+            /*
             SetVehicleType? data = JsonSerializer.Deserialize<SetVehicleType>(vt);
 
             //Get Auto Trader Vehicle Types
-            var advertiserId = "66945";
-            var requestUrl = "https://api-sandbox.autotrader.co.uk/taxonomy/makes?vehicleType=" + data.name + "&advertiserId=" + advertiserId;
+            var advertiserId = "66945"; //models?makeId=&advertiserId=1234
+            var requestUrl = "https://api-sandbox.autotrader.co.uk/taxonomy/models?makeId=" + data.makeId + "&advertiserId=" + advertiserId;
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
             request.Headers.Add("Authorization", "Bearer " + accesstoken.access_token);
@@ -103,7 +155,9 @@ namespace ATTaxonomyVehicleMakes
 
                 MDBcollection.InsertOne(document);
 
-            }
+            //*/
+
+            //}
         }
     }
 }
