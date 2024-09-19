@@ -4,11 +4,10 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using System.Text.Json;
-using static ATTaxonomyVehicleGenerations.GetVehicleGenerations;
 
 namespace ATTaxonomyVehicleDerivatives
 {
-    public class GetVehicleDerivatives
+    public class GetVehicleGenerations
     {
         public class AccessToken
         {
@@ -41,14 +40,14 @@ namespace ATTaxonomyVehicleDerivatives
         {
             public string? derivativeId { get; set; }
             public string? name { get; set; }
-            public DateTime? introduced { get; set; }
-            public DateTime? discontinued { get; set; }
+            public DateOnly introduced { get; set; }
+            public DateOnly discontinued { get; set; }
         }
 
-        public static async Task<AccessToken?> Token()
+        public static async Task Main()
         {
-            var key = "eDynamix-StockMGT-Parkway-SB-05-09-24";
-            var secret = "JUwLAeG8zzlnJE2jyKizp0mzeEcBD65Q";
+            var key = "eDynamix-StockMGT-Parkway-SB-01-06-23";
+            var secret = "ZBNFVVGyTf3Ne61edbP5IY7y6L7XTB8W";
 
             //Get Auto Trader Sandbox token
             var ATclient = new HttpClient();
@@ -65,36 +64,25 @@ namespace ATTaxonomyVehicleDerivatives
             string AccessTokenRes = await ATresponse.Content.ReadAsStringAsync();
             AccessToken? accesstoken = JsonSerializer.Deserialize<AccessToken>(AccessTokenRes);
 
-            return accesstoken;
-        }
-
-        public static SetVehicleGeneration? Generations()
-        {
             //Get VehicleGenerations
             var MDBclient = new MongoClient("mongodb+srv://aarabadzhiev:#Zabrav1h@cluster0.urc9udb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
             var MDBdatabase = MDBclient.GetDatabase("C#Test");
             var MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleGenerations");
 
-            var vehicleGeneration = MDBcollection.Find("{}")
-                                                 .Sort("{name : 1}")
-                                                 .Project("{ _id : 0, name : 0 }")
-                                                 .ToList();
+            var vehicleGeneration = MDBcollection
+                                           .Find("{}")
+                                           .Sort("{name : 1}")
+                                           .Project("{ _id : 0, name : 0 }")
+                                           .ToList();
 
             string? vehgen = vehicleGeneration.Select(v => BsonSerializer.Deserialize<GetVehicleGeneration>(v)).ToJson();
 
             vehgen = "{\"generationId\":" + vehgen + "}";
 
             SetVehicleGeneration? data = JsonSerializer.Deserialize<SetVehicleGeneration>(
-                                                                                          json: vehgen,
-                                                                                          options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
-
-            return data;
-        }
-
-        public static async Task<VehicleDerivative?> Derivatives()
-        {
-            var token = await Token();
-            var data = Generations();
+                json: vehgen
+                , options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
+                );
 
             foreach (var generationId in data.generationId)
             {
@@ -103,73 +91,34 @@ namespace ATTaxonomyVehicleDerivatives
                 var requestUrl = "https://api-sandbox.autotrader.co.uk/taxonomy/derivatives?generationId=" + generationId.generationId;
                 var client = new HttpClient();
                 var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
-                request.Headers.Add("Authorization", "Bearer " + token.access_token);
+                request.Headers.Add("Authorization", "Bearer " + accesstoken.access_token);
                 request.Headers.Add("cpntent-type", "application/json");
                 request.Headers.Add("Cookie", "__cf_bm=B6mel2RAr2Y8bJ_YC12yGM72Fz992ZOgK4NdAQIY3qQ-1718109215-1.0.1.1-UBKCntQDCf.gtz4TRb93MxGrFR.aGSkdL8P4mtAD16PxCY1ZzAzjuMOEV3gmMVnclxTq_BvbH7gTIH7Bz6k2BA");
                 var response = await client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
 
-                string? vehicleDerivative = await response.Content.ReadAsStringAsync();
+                string vehicleDerivative = await response.Content.ReadAsStringAsync();
 
                 VehicleDerivative? vehder = JsonSerializer.Deserialize<VehicleDerivative>(
                     json: vehicleDerivative,
                     options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
+                MDBcollection = null;
+                MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleDerivatives");
+
                 foreach (var Derivative in vehder.derivatives)
                 {
-                    Console.WriteLine(Derivative.derivativeId + " " +
-                                      Derivative.name + " " +
-                                      Derivative.introduced + " " +
-                                      Derivative.discontinued);
-                    Console.ReadKey();
+                    var document = new BsonDocument
+                    {
+                        {"derivativeId", Derivative.derivativeId},
+                        {"name", Derivative.name},
+                        {"introduced", Derivative.introduced.ToShortDateString()},
+                        {"discontinued", Derivative.discontinued.ToShortDateString()}
+                    };
 
-                    //var document = new BsonDocument
-                    //{
-                    //    {"derivativeId", Derivative.derivativeId},
-                    //    {"name", Derivative.name},
-                    //    {"introduced", Derivative.introduced},
-                    //    {"discontinued", Derivative.discontinued}
-                    //};
-
-                    //MDBcollection.InsertOne(document);
+                    MDBcollection.InsertOne(document);
                 }
-
-                return vehder;
             }
-
-            return null;
-        }
-
-        public static async Task Main()
-        {
-            var vehder = await Derivatives();
-
-            var MDBclient = new MongoClient("mongodb+srv://aarabadzhiev:#Zabrav1h@cluster0.urc9udb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
-            var MDBdatabase = MDBclient.GetDatabase("C#Test");
-            var MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleGenerations");
-
-            //if (!String.IsNullOrEmpty(vehder.ToString()))
-            //{
-            //    foreach (var Derivative in vehder.derivatives)
-            //    {
-            //        Console.WriteLine(Derivative.derivativeId + " " +
-            //                          Derivative.name + " " +
-            //                          Derivative.introduced + " " +
-            //                          Derivative.discontinued);
-            //        Console.ReadKey();
-
-            //        //var document = new BsonDocument
-            //        //{
-            //        //    {"derivativeId", Derivative.derivativeId},
-            //        //    {"name", Derivative.name},
-            //        //    {"introduced", Derivative.introduced},
-            //        //    {"discontinued", Derivative.discontinued}
-            //        //};
-
-            //        //MDBcollection.InsertOne(document);
-            //    }
-
-            //}
         }
     }
 }
