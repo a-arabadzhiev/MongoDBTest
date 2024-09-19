@@ -23,10 +23,10 @@ namespace ATTaxonomyVehicleTypes
             public string? name { get; set; }
         }
 
-        public static async Task Main()
+        public static async Task<AccessToken?> Token()
         {
-            var key = "eDynamix-StockMGT-Parkway-SB-01-06-23";
-            var secret = "ZBNFVVGyTf3Ne61edbP5IY7y6L7XTB8W";
+            var key = "eDynamix-StockMGT-Parkway-SB-05-09-24";
+            var secret = "JUwLAeG8zzlnJE2jyKizp0mzeEcBD65Q";
 
             //Get Auto Trader Sandbox token
             var ATclient = new HttpClient();
@@ -43,22 +43,34 @@ namespace ATTaxonomyVehicleTypes
             string AccessTokenRes = await ATresponse.Content.ReadAsStringAsync();
             AccessToken? accesstoken = JsonSerializer.Deserialize<AccessToken>(AccessTokenRes);
 
-            //Get Auto Trader Vehicle Types
+            return accesstoken;
+        }
+
+        public static async Task<HttpResponseMessage> VehicleType()
+        {
+            var token = await Token();
+
             var advertiserId = "66945";
             var requestUrl = "https://api-sandbox.autotrader.co.uk/taxonomy/vehicleTypes?advertiserId=" + advertiserId;
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
-            request.Headers.Add("Authorization", "Bearer " + accesstoken.access_token);
+            request.Headers.Add("Authorization", "Bearer " + token.access_token);
             request.Headers.Add("cpntent-type", "application/json");
             request.Headers.Add("Cookie", "__cf_bm=B6mel2RAr2Y8bJ_YC12yGM72Fz992ZOgK4NdAQIY3qQ-1718109215-1.0.1.1-UBKCntQDCf.gtz4TRb93MxGrFR.aGSkdL8P4mtAD16PxCY1ZzAzjuMOEV3gmMVnclxTq_BvbH7gTIH7Bz6k2BA");
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
-            string vt = await response.Content.ReadAsStringAsync();
+            return response;
+        }
+            public static async Task Main()
+        {
+            var res = await VehicleType();
+
+            string vt = await res.Content.ReadAsStringAsync();
 
             GetVehicleType? data = JsonSerializer.Deserialize<GetVehicleType>(
-                json: vt, 
-                options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true} );
+                json: vt,
+                options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
             //Insert Vehicle Types in MongoDB
             var MDBclient = new MongoClient("mongodb+srv://aarabadzhiev:#Zabrav1h@cluster0.urc9udb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
@@ -67,7 +79,6 @@ namespace ATTaxonomyVehicleTypes
 
             foreach (var vehicleType in data.vehicleTypes)
             {
-
                 var document = new BsonDocument
                 {
                     {"name", vehicleType.name}

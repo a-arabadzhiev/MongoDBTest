@@ -11,11 +11,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATTaxonomyVehicleTypes", "A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATTaxonomyVehicleMakes", "ConsoleApp1\ATTaxonomyVehicleMakes.csproj", "{FC747A17-1A83-4291-B5AC-C87126CAABBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ATTaxonomyVehicleModels", "ConsoleApp2\ATTaxonomyVehicleModels.csproj", "{1FB5AC3A-0591-4018-8633-F1D4361574B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATTaxonomyVehicleModels", "ConsoleApp2\ATTaxonomyVehicleModels.csproj", "{1FB5AC3A-0591-4018-8633-F1D4361574B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ATTaxonomyVehicleGenerations", "GetGenerations\ATTaxonomyVehicleGenerations.csproj", "{5E747E4D-A80F-47F8-B085-8045B61750EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATTaxonomyVehicleGenerations", "GetGenerations\ATTaxonomyVehicleGenerations.csproj", "{5E747E4D-A80F-47F8-B085-8045B61750EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ATTaxonomyVehicleDerivatives", "ATTaxonomyVehicleDerivatives\ATTaxonomyVehicleDerivatives.csproj", "{7F66D3D8-301D-4591-8540-4BED54619909}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATTaxonomyVehicleDerivatives", "ATTaxonomyVehicleDerivatives\ATTaxonomyVehicleDerivatives.csproj", "{7F66D3D8-301D-4591-8540-4BED54619909}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ATToken", "ConsoleApp3\ATToken.csproj", "{7C7C9513-5E21-4F43-B2F9-9641DEFA5791}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,6 +45,10 @@ Global
 		{7F66D3D8-301D-4591-8540-4BED54619909}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F66D3D8-301D-4591-8540-4BED54619909}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F66D3D8-301D-4591-8540-4BED54619909}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C7C9513-5E21-4F43-B2F9-9641DEFA5791}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C7C9513-5E21-4F43-B2F9-9641DEFA5791}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C7C9513-5E21-4F43-B2F9-9641DEFA5791}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C7C9513-5E21-4F43-B2F9-9641DEFA5791}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
