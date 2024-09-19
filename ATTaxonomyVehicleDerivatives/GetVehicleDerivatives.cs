@@ -4,12 +4,10 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using System.Text.Json;
-using ThirdParty.Json.LitJson;
-using static ATTaxonomyVehicleDerivatives.GetVehicleGenerations;
 
 namespace ATTaxonomyVehicleDerivatives
 {
-    public class GetVehicleGenerations
+    public class GetVehicleDerivatives
     {
         public class AccessToken
         {
@@ -113,6 +111,8 @@ namespace ATTaxonomyVehicleDerivatives
 
                 return vehder;
             }
+
+            return null;
         }
 
         public static async Task Main()
