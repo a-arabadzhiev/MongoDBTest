@@ -44,8 +44,8 @@ namespace ATTaxonomyVehicleGenerations
 
         public static async Task Main()
         {
-            var key = "eDynamix-StockMGT-Parkway-SB-01-06-23";
-            var secret = "ZBNFVVGyTf3Ne61edbP5IY7y6L7XTB8W";
+            var key = "eDynamix-StockMGT-Parkway-SB-05-09-24";
+            var secret = "JUwLAeG8zzlnJE2jyKizp0mzeEcBD65Q";
 
             //Get Auto Trader Sandbox token
             var ATclient = new HttpClient();

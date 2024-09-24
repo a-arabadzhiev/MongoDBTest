@@ -3,6 +3,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using System.Text.Json;
 
 namespace ATTaxonomyVehicleDerivatives
@@ -12,7 +13,7 @@ namespace ATTaxonomyVehicleDerivatives
         public class AccessToken
         {
             public string? access_token { get; set; }
-            public string? expires { get; set; }
+            public DateTime? expires_at { get; set; }
         }
 
         public class GetVehicleGeneration
@@ -40,11 +41,11 @@ namespace ATTaxonomyVehicleDerivatives
         {
             public string? derivativeId { get; set; }
             public string? name { get; set; }
-            public DateOnly introduced { get; set; }
-            public DateOnly discontinued { get; set; }
+            public DateTime? introduced { get; set; }
+            public DateTime? discontinued { get; set; }
         }
 
-        public static async Task Main()
+        public static async Task<AccessToken?> Token()
         {
             var key = "eDynamix-StockMGT-Parkway-SB-05-09-24";
             var secret = "JUwLAeG8zzlnJE2jyKizp0mzeEcBD65Q";
@@ -64,6 +65,11 @@ namespace ATTaxonomyVehicleDerivatives
             string AccessTokenRes = await ATresponse.Content.ReadAsStringAsync();
             AccessToken? accesstoken = JsonSerializer.Deserialize<AccessToken>(AccessTokenRes);
 
+            return accesstoken;
+        }
+
+        public static async Task Main()
+        {
             //Get VehicleGenerations
             var MDBclient = new MongoClient("mongodb+srv://aarabadzhiev:#Zabrav1h@cluster0.urc9udb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
             var MDBdatabase = MDBclient.GetDatabase("C#Test");
@@ -84,10 +90,11 @@ namespace ATTaxonomyVehicleDerivatives
                 , options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
                 );
 
+            var accesstoken = await Token();
+
             foreach (var generationId in data.generationId)
             {
                 //Get Auto Trader Vehicle Derivatives
-                var advertiserId = "66945";
                 var requestUrl = "https://api-sandbox.autotrader.co.uk/taxonomy/derivatives?generationId=" + generationId.generationId;
                 var client = new HttpClient();
                 var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
@@ -103,22 +110,35 @@ namespace ATTaxonomyVehicleDerivatives
                     json: vehicleDerivative,
                     options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
-                MDBcollection = null;
-                MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleDerivatives");
-
-                foreach (var Derivative in vehder.derivatives)
+                if (!String.IsNullOrEmpty(vehder.ToString()))
                 {
-                    var document = new BsonDocument
-                    {
-                        {"derivativeId", Derivative.derivativeId},
-                        {"name", Derivative.name},
-                        {"introduced", Derivative.introduced.ToShortDateString()},
-                        {"discontinued", Derivative.discontinued.ToShortDateString()}
-                    };
+                    MDBcollection = null;
+                    MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleDerivatives");
 
-                    MDBcollection.InsertOne(document);
+                    foreach (var Derivative in vehder.derivatives)
+                    {
+                        var document = new BsonDocument
+                        {
+                            {"derivativeId", Derivative.derivativeId},
+                            {"name", Derivative.name},
+                            {"introduced", Derivative.introduced},
+                            {"discontinued", Derivative.discontinued}
+                        };
+
+                        MDBcollection.InsertOne(document);
+                    }
                 }
-            }
+
+                //Console.WriteLine(accesstoken.expires_at + "\n" + DateTime.Now.AddHours(-1) + "\n" + accesstoken.access_token);
+                //Console.ReadKey();    
+
+                if (accesstoken.expires_at <= DateTime.Now.AddHours(-1))
+                {
+                    accesstoken = await Token();
+
+                    Console.WriteLine(accesstoken.expires_at + "\n" + DateTime.Now.AddHours(-1) + "\n" + accesstoken.access_token);
+                }
+            }                   
         }
     }
 }
