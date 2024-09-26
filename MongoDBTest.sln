@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATTaxonomyVehicleGeneration
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATTaxonomyVehicleDerivatives", "ATTaxonomyVehicleDerivatives\ATTaxonomyVehicleDerivatives.csproj", "{7F66D3D8-301D-4591-8540-4BED54619909}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ATToken", "ConsoleApp3\ATToken.csproj", "{7C7C9513-5E21-4F43-B2F9-9641DEFA5791}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATToken", "ConsoleApp3\ATToken.csproj", "{7C7C9513-5E21-4F43-B2F9-9641DEFA5791}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ATTaxonomyTechnicalData", "ATTechnicalData\ATTaxonomyTechnicalData.csproj", "{FA8E8C8F-D066-44C0-A0D2-740DF3803335}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +51,10 @@ Global
 		{7C7C9513-5E21-4F43-B2F9-9641DEFA5791}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C7C9513-5E21-4F43-B2F9-9641DEFA5791}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C7C9513-5E21-4F43-B2F9-9641DEFA5791}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA8E8C8F-D066-44C0-A0D2-740DF3803335}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA8E8C8F-D066-44C0-A0D2-740DF3803335}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA8E8C8F-D066-44C0-A0D2-740DF3803335}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA8E8C8F-D066-44C0-A0D2-740DF3803335}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

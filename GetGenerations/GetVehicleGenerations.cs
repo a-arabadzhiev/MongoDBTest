@@ -85,7 +85,6 @@ namespace ATTaxonomyVehicleGenerations
             foreach (var modelId in data.modelId)
             {
                 //Get Auto Trader Vehicle Generations
-                var advertiserId = "66945";
                 var requestUrl = "https://api-sandbox.autotrader.co.uk/taxonomy/generations?modelId=" + modelId.modelId;
                 var client = new HttpClient();
                 var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);

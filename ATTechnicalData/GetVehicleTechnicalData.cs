@@ -6,9 +6,9 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using System.Text.Json;
 
-namespace ATTaxonomyVehicleDerivatives
+namespace ATTaxonomyTechnicalData
 {
-    public class GetVehicleGenerations
+    public class GetVehicleTechnicalData
     {
         public class AccessToken
         {
@@ -16,33 +16,20 @@ namespace ATTaxonomyVehicleDerivatives
             public DateTime? expires_at { get; set; }
         }
 
-        public class GetVehicleGeneration
+        public class GetVehicleDerivative
         {
-            [BsonElement("generationId"), BsonRepresentation(BsonType.String)]
-            public string? generationId { get; set; }
+            [BsonElement("derivativeId"), BsonRepresentation(BsonType.String)]
+            public string? derivativeId { get; set; }
         }
 
-        public class SetVehicleGeneration
+        public class SetDerivativeId
         {
-            public List<Generationid>? generationId { get; set; }
+            public List<Derivativeid>? derivativeId { get; set; }
         }
 
-        public class Generationid
-        {
-            public string? generationId { get; set; }
-        }
-
-        public class VehicleDerivative
-        {
-            public List<Derivative>? derivatives { get; set; }
-        }
-
-        public class Derivative
+        public class Derivativeid
         {
             public string? derivativeId { get; set; }
-            public string? name { get; set; }
-            public DateTime? introduced { get; set; }
-            public DateTime? discontinued { get; set; }
         }
 
         public static async Task<AccessToken?> Token()
@@ -70,32 +57,33 @@ namespace ATTaxonomyVehicleDerivatives
 
         public static async Task Main()
         {
-            //Get VehicleGenerations
+            //GetVehicleDerivatives
             var MDBclient = new MongoClient("mongodb+srv://aarabadzhiev:#Zabrav1h@cluster0.urc9udb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
             var MDBdatabase = MDBclient.GetDatabase("C#Test");
-            var MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleGenerations");
+            var MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleDerivatives");
 
-            var vehicleGeneration = MDBcollection
+            var vehicleDerivatives = MDBcollection
                                            .Find("{}")
                                            .Sort("{name : 1}")
-                                           .Project("{ _id : 0, name : 0 }")
+                                           .Project("{ _id : 0, name : 0, introduced : 0, discontinued : 0 }")
                                            .ToList();
 
-            string? vehgen = vehicleGeneration.Select(v => BsonSerializer.Deserialize<GetVehicleGeneration>(v)).ToJson();
+            string? vehder = vehicleDerivatives.Select(v => BsonSerializer.Deserialize<GetVehicleDerivative>(v)).ToJson();
 
-            vehgen = "{\"generationId\":" + vehgen + "}";
+            vehder = "{\"derivativeId\":" + vehder + "}";
 
-            SetVehicleGeneration? data = JsonSerializer.Deserialize<SetVehicleGeneration>(
-                json: vehgen
+            SetDerivativeId? data = JsonSerializer.Deserialize<SetDerivativeId>(
+                json: vehder
                 , options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
                 );
 
             var accesstoken = await Token();
 
-            foreach (var generationId in data.generationId)
+            foreach (var derivativeId in data.derivativeId)
             {
-                //Get Auto Trader Vehicle Derivatives
-                var requestUrl = "https://api-sandbox.autotrader.co.uk/taxonomy/derivatives?generationId=" + generationId.generationId;
+                //GetVehicleTechnicalData
+                var advertiserId = "66945";
+                var requestUrl = "https://api-sandbox.autotrader.co.uk/taxonomy/derivatives/" + derivativeId.derivativeId + "?advertiserId=" + advertiserId;
                 var client = new HttpClient();
                 var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
                 request.Headers.Add("Authorization", "Bearer " + accesstoken.access_token);
@@ -104,33 +92,30 @@ namespace ATTaxonomyVehicleDerivatives
                 var response = await client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
 
-                string vehicleDerivative = await response.Content.ReadAsStringAsync();
+                string vehicleTechData = await response.Content.ReadAsStringAsync();
 
-                VehicleDerivative? vehder = JsonSerializer.Deserialize<VehicleDerivative>(
-                    json: vehicleDerivative,
+                TechnicalData? techdata = JsonSerializer.Deserialize<TechnicalData>(
+                    json: vehicleTechData,
                     options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
-                if (!String.IsNullOrEmpty(vehder.ToString()))
+                if (!String.IsNullOrEmpty(techdata.ToString()))
                 {
                     MDBcollection = null;
-                    MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleDerivatives");
+                    MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleTechnicalData");
 
-                    foreach (var Derivative in vehder.derivatives)
+                    foreach (var TecnicalData in techdata.derivativeId)
                     {
-                        var document = new BsonDocument
-                        {
-                            {"derivativeId", Derivative.derivativeId},
-                            {"name", Derivative.name},
-                            {"introduced", Derivative.introduced},
-                            {"discontinued", Derivative.discontinued}
-                        };
+                        var document = BsonDocument.Parse(vehicleTechData);
+
+                        //Console.WriteLine(document);
+                        //Console.ReadLine();
 
                         MDBcollection.InsertOne(document);
-                    }
+                    }                        
                 }
 
-                //Console.WriteLine(accesstoken.expires_at + "\n" + DateTime.Now.AddMinutes(-59) + "\n" + accesstoken.access_token);
-                //Console.ReadKey();
+                //Console.WriteLine(accesstoken.expires_at + "\n" + DateTime.Now.AddHours(-1) + "\n" + accesstoken.access_token);
+                //Console.ReadKey();    
 
                 if (accesstoken.expires_at <= DateTime.Now.AddMinutes(-58))
                 {
@@ -138,7 +123,7 @@ namespace ATTaxonomyVehicleDerivatives
 
                     Console.WriteLine(accesstoken.expires_at + "\n" + DateTime.Now.AddMinutes(-58) + "\n" + accesstoken.access_token);
                 }
-            }                   
+            }
         }
     }
 }
