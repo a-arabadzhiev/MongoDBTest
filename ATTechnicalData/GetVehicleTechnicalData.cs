@@ -107,15 +107,9 @@ namespace ATTaxonomyTechnicalData
                     {
                         var document = BsonDocument.Parse(vehicleTechData);
 
-                        //Console.WriteLine(document);
-                        //Console.ReadLine();
-
                         MDBcollection.InsertOne(document);
                     }                        
                 }
-
-                //Console.WriteLine(accesstoken.expires_at + "\n" + DateTime.Now.AddHours(-1) + "\n" + accesstoken.access_token);
-                //Console.ReadKey();    
 
                 if (accesstoken.expires_at <= DateTime.Now.AddMinutes(-58))
                 {

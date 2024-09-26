@@ -54,7 +54,7 @@
         public string? fuelEconomyWLTPMediumMPG { get; set; }
         public string? fuelEconomyWLTPHighMPG { get; set; }
         public string? fuelEconomyWLTPExtraHighMPG { get; set; }
-        public string? fuelEconomyWLTPCombinedMPG { get; set; }
+        public float? fuelEconomyWLTPCombinedMPG { get; set; }
         public int? lengthMM { get; set; }
         public int? heightMM { get; set; }
         public int? widthMM { get; set; }
@@ -76,8 +76,8 @@
         public int? payloadWidthMM { get; set; }
         public int? payloadHeightMM { get; set; }
         public int? payloadWeightKG { get; set; }
-        public string? payloadVolumeCubicMetres { get; set; }
-        public string? rde2Compliant { get; set; }
+        public float? payloadVolumeCubicMetres { get; set; }
+        public bool? rde2Compliant { get; set; }
         public string? sector { get; set; }
         public List<Chargetime>? chargeTimes { get; set; }
         public Oem? oem { get; set; }
