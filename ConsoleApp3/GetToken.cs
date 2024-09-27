@@ -8,7 +8,7 @@ namespace ATToken
         public class AccessToken
         {
             public string? access_token { get; set; }
-            public string? expires { get; set; }
+            public DateTime? expires_at { get; set; }
         }
 
         public static async Task<AccessToken?> Main()
