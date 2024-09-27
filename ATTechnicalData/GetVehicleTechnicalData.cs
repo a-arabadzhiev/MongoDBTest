@@ -79,6 +79,9 @@ namespace ATTaxonomyTechnicalData
 
             var accesstoken = await Token();
 
+            MDBcollection = null;
+            MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleTechnicalData");
+
             foreach (var derivativeId in data.derivativeId)
             {
                 //GetVehicleTechnicalData
@@ -100,15 +103,9 @@ namespace ATTaxonomyTechnicalData
 
                 if (!String.IsNullOrEmpty(techdata.ToString()))
                 {
-                    MDBcollection = null;
-                    MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleTechnicalData");
-
-                    foreach (var TecnicalData in techdata.derivativeId)
-                    {
                         var document = BsonDocument.Parse(vehicleTechData);
 
                         MDBcollection.InsertOne(document);
-                    }                        
                 }
 
                 if (accesstoken.expires_at <= DateTime.Now.AddMinutes(-58))

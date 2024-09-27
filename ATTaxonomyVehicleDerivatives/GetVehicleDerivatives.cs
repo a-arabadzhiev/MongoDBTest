@@ -92,6 +92,9 @@ namespace ATTaxonomyVehicleDerivatives
 
             var accesstoken = await Token();
 
+            MDBcollection = null;
+            MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleDerivatives");
+
             foreach (var generationId in data.generationId)
             {
                 //Get Auto Trader Vehicle Derivatives
@@ -112,9 +115,6 @@ namespace ATTaxonomyVehicleDerivatives
 
                 if (!String.IsNullOrEmpty(vehder.ToString()))
                 {
-                    MDBcollection = null;
-                    MDBcollection = MDBdatabase.GetCollection<BsonDocument>("VehicleDerivatives");
-
                     foreach (var Derivative in vehder.derivatives)
                     {
                         var document = new BsonDocument
@@ -128,9 +128,6 @@ namespace ATTaxonomyVehicleDerivatives
                         MDBcollection.InsertOne(document);
                     }
                 }
-
-                //Console.WriteLine(accesstoken.expires_at + "\n" + DateTime.Now.AddMinutes(-59) + "\n" + accesstoken.access_token);
-                //Console.ReadKey();
 
                 if (accesstoken.expires_at <= DateTime.Now.AddMinutes(-58))
                 {
