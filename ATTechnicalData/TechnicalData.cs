@@ -1,4 +1,4 @@
-﻿namespace ATTaxonomyTechnicalData
+﻿namespace ATTaxonomyVehicleTechnicalData
 {
 
     public class TechnicalData

@@ -6,7 +6,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using System.Text.Json;
 
-namespace ATTaxonomyTechnicalData
+namespace ATTaxonomyVehicleTechnicalData
 {
     public class GetVehicleTechnicalData
     {

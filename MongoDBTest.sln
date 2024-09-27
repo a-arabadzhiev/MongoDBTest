@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATTaxonomyVehicleDerivative
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATToken", "ConsoleApp3\ATToken.csproj", "{7C7C9513-5E21-4F43-B2F9-9641DEFA5791}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ATTaxonomyTechnicalData", "ATTechnicalData\ATTaxonomyTechnicalData.csproj", "{FA8E8C8F-D066-44C0-A0D2-740DF3803335}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATTaxonomyVehicleTechnicalData", "ATTechnicalData\ATTaxonomyVehicleTechnicalData.csproj", "{FA8E8C8F-D066-44C0-A0D2-740DF3803335}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
