@@ -8,19 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="GetAccessToken.cs" />
-    <Compile Remove="GetResults.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="MongoDB.Bson" Version="2.29.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.29.0" />
     <PackageReference Include="MongoDB.Driver.Core" Version="2.29.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\ATConnection\ATConnection.csproj" />
-    <ProjectReference Include="..\MDBConnection\MDBConnection.csproj" />
   </ItemGroup>
 
 </Project>
