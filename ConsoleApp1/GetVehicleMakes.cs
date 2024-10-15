@@ -1,5 +1,4 @@
-﻿
-using ATConn;
+﻿using ATConn;
 using MDBConnection;
 using MongoDB.Bson;
 
@@ -9,9 +8,12 @@ namespace ATTaxonomyVehicleMakes
     {
         public static void Main()
         {
-            string? vehtype = "Car";
+            //string? vehtype = "Car";
 
-            string? webext = "makes?vehicleType=" + vehtype + "&advertiserId=66945";
+            string? webext = "makes?vehicleType=Car&advertiserId=66945";
+
+            Console.WriteLine(webext);
+            Console.ReadLine();
 
             string? cookie = "__cf_bm=B6mel2RAr2Y8bJ_YC12yGM72Fz992ZOgK4NdAQIY3qQ-1718109215-1.0.1.1-UBKCntQDCf.gtz4TRb93MxGrFR.aGSkdL8P4mtAD16PxCY1ZzAzjuMOEV3gmMVnclxTq_BvbH7gTIH7Bz6k2BA";
 
@@ -23,14 +25,14 @@ namespace ATTaxonomyVehicleMakes
             //    json: vehicleMake ,
             //    options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
-            var MDBCollection = new MDBConn(collection, vehicleMake);
+            var MDBCollection = new MDBConn(collection, null);
 
             //foreach (var Make in vehmke.makes)
             //{
 
             var document = BsonDocument.Parse(vehicleMake);
 
-            MDBCollection.InsertOne(document);
+            //MDBCollection.InsertOne(document);
 
             //}
         }
