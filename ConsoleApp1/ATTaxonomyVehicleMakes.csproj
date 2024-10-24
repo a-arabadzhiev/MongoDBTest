@@ -9,8 +9,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ATConnection\ATConnection.csproj" />
-    <ProjectReference Include="..\ConsoleApp3\ATToken.csproj" />
-    <ProjectReference Include="..\MDBConnection\MDBConnection.csproj" />
+    <ProjectReference Include="..\MDBConnection\MDBInsertDocument.csproj" />
+    <ProjectReference Include="..\MDBGetData\MDBFindData.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ATConnection": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\Users\\a.arabadzhiev\\source\\repos\\MongoDBTest\\ATConnection\\obj\\Debug\\net8.0\\ref"
+    }
+  }
+}

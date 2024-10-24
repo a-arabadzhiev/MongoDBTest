@@ -1,40 +1,60 @@
-﻿using ATConn;
-using MDBConnection;
+﻿using ATConnection;
+using MDBInsertDocument;
 using MongoDB.Bson;
+using MDBFindData;
+using System.Text.Json;
 
 namespace ATTaxonomyVehicleMakes
 {
     public class GetVehicleMakes
     {
-        public static void Main()
+        public class VehicleType
         {
-            //string? vehtype = "Car";
+            public string? name { get; set; }
+        }
+        public class VehicleMake
+        {
+            public List<Make>? makes { get; set; }
+        }
+        public class Make
+        {
+            public string? makeId { get; set; }
+            public string? name { get; set; }
+        }
+        public static async Task Main()
+        {
+            string? advertiserid = "66945";
+            string? type = "Car";
 
-            string? webext = "makes?vehicleType=Car&advertiserId=66945";
+            string? collection = "VehicleTypes";
+            string? project = "{ _id : 0, " + "name: 1 }";
+            string? filter = "{name: \"" + type + "\" }";
 
-            Console.WriteLine(webext);
-            Console.ReadLine();
+            string? vehicletype = MDBGetData.Find(collection, filter, project).ToString().Replace("[", "").Replace("]", "");
 
+            VehicleType? vehtyp = JsonSerializer.Deserialize<VehicleType?>(
+                json: vehicletype,
+                options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+
+            string? webext = "makes?vehicleType=" + vehtyp.name + "&advertiserId=" + advertiserid;
             string? cookie = "__cf_bm=B6mel2RAr2Y8bJ_YC12yGM72Fz992ZOgK4NdAQIY3qQ-1718109215-1.0.1.1-UBKCntQDCf.gtz4TRb93MxGrFR.aGSkdL8P4mtAD16PxCY1ZzAzjuMOEV3gmMVnclxTq_BvbH7gTIH7Bz6k2BA";
 
-            string? vehicleMake = new ATConnect(webext, cookie).ToString();
+            string? vehicleMake = await ATConnect.Connect(webext, cookie);
 
-            string? collection = "VehicleMakes";
+            VehicleMake? vehiclemakes = JsonSerializer.Deserialize<VehicleMake?>(
+                json: vehicleMake,
+                options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
-            //VehicleMakes? vehmke = JsonSerializer.Deserialize<VehicleMakes>(
-            //    json: vehicleMake ,
-            //    options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+            foreach (var make in vehiclemakes.makes)
+            {
+                var document = new BsonDocument
+                {
+                    {"makeId", make.makeId},
+                    {"name", make.name}
+                };
 
-            var MDBCollection = new MDBConn(collection, null);
-
-            //foreach (var Make in vehmke.makes)
-            //{
-
-            var document = BsonDocument.Parse(vehicleMake);
-
-            //MDBCollection.InsertOne(document);
-
-            //}
+                MDBInsert.InsertOne("VehicleMakes", document);
+            }
         }
     }
 }

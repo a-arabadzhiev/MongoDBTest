@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ATConnection\ATConnection.csproj" />
-    <ProjectReference Include="..\MDBConnection\MDBConnection.csproj" />
+    <ProjectReference Include="..\MDBConnection\MDBInsertDocument.csproj" />
   </ItemGroup>
 
 </Project>
