@@ -5,17 +5,7 @@ namespace MDBInsertDocument
 {
     public class MDBInsert(string? CollectionName, BsonDocument? Document)
     {
-        public static void Main() 
-        {
-            //string? collection = "VehicleMakes";
-            //var document = new BsonDocument
-            //    {
-            //        {"makeId", "test"},
-            //        {"name", "test"}
-            //    };
-
-            //InsertOne(collection, document);
-        }
+        public static void Main() { } 
         public static void InsertOne(string? CollectionName, BsonDocument? Document)
         {
             string? client = "mongodb+srv://aarabadzhiev:#Zabrav1h@cluster0.urc9udb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";

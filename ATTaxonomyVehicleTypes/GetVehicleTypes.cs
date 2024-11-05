@@ -13,7 +13,7 @@ namespace ATTaxonomyVehicleTypes
             string? webext = "vehicleTypes?advertiserId=" + advertiserid;
             string? cookie = "__cf_bm=Rucph7ECriCdynJnhNow.vQ6YTW8hhUz_aHgRq0gJiA-1728326592-1.0.1.1-ka7pDua0XBYxhLQhFZxc8f_L4Zj99inX1wnAo56YeXzQ22oFjZb9XE7nwPt2jIGHSFPFJxBdbyLzkc10K_LN2Q";
 
-            string? vehtyp = await ATConnect.Connect(webext, cookie);
+            string? vehtyp = await ATConnect.Connect(webext, cookie, null);
 
             VehicleTypes? vehicletype = JsonSerializer.Deserialize<VehicleTypes?>(
                 json: vehtyp,

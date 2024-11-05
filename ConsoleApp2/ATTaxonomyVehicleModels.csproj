@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ATConnection\ATConnection.csproj" />
     <ProjectReference Include="..\MDBConnection\MDBInsertDocument.csproj" />
     <ProjectReference Include="..\MDBGetData\MDBFindData.csproj" />

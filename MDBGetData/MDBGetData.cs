@@ -6,7 +6,7 @@ namespace MDBFindData
     public class MDBGetData(string? CollectionName, string? Filter, string? Project)
     {
         public static void Main() { }
-        public static string? Find(string? CollectionName, string? Filter, string? Project)
+        public static List<BsonDocument>? Find(string? CollectionName, string? Filter, string? Project)
         {
             string? client = "mongodb+srv://aarabadzhiev:#Zabrav1h@cluster0.urc9udb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
             string? database = "C#Test";
@@ -19,7 +19,7 @@ namespace MDBFindData
                                         .Project(Project)
                                         .ToList();
 
-            return FindData.ToJson();
+            return FindData;
         }
     }
 }
