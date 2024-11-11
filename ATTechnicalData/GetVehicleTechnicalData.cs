@@ -27,7 +27,9 @@ namespace ATTaxonomyVehicleTechnicalData
                                 json: vehder,
                                 options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
-            AccessToken? token = await GetToken.Conn();
+            AccessToken? token = await GetToken.Conn(website: GlobalVariables.Variables.ATTokenCred.website,
+                                                     key: GlobalVariables.Variables.ATTokenCred.key,
+                                                     secret: GlobalVariables.Variables.ATTokenCred.secret);
 
             foreach (var derivativeId in vg.derivativeId)
             {
@@ -38,10 +40,12 @@ namespace ATTaxonomyVehicleTechnicalData
 
                 if (token.expires_at <= DateTime.Now.AddMinutes(2))
                 {
-                    token = await GetToken.Conn();
+                    token = await GetToken.Conn(website: GlobalVariables.Variables.ATTokenCred.website,
+                                                key: GlobalVariables.Variables.ATTokenCred.key,
+                                                secret: GlobalVariables.Variables.ATTokenCred.secret);
                 }
 
-                string? vehicleTechnicalData = await ATConnect.Connect(webext, cookie, token.access_token);
+                string? vehicleTechnicalData = await ATConnect.Connect(WebSite: webext, Token: token.access_token);
 
                 var document = BsonDocument.Parse(vehicleTechnicalData);
 

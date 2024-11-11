@@ -28,7 +28,9 @@ namespace ATTaxonomyVehicleGenerations
                                 options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
             
             DateTime? expires = DateTime.Now;
-            AccessToken? token = await GetToken.Conn();
+            AccessToken? token = await GetToken.Conn(website: GlobalVariables.Variables.ATTokenCred.website,
+                                                     key: GlobalVariables.Variables.ATTokenCred.key,
+                                                     secret: GlobalVariables.Variables.ATTokenCred.secret);
 
             foreach (var modelId in vm.modelId)
             {
@@ -38,10 +40,12 @@ namespace ATTaxonomyVehicleGenerations
                 if (token.expires_at <= expires)
                 {
                     expires = DateTime.Now;
-                    token = await GetToken.Conn();                    
+                    token = await GetToken.Conn(website: GlobalVariables.Variables.ATTokenCred.website,
+                                                key: GlobalVariables.Variables.ATTokenCred.key,
+                                                secret: GlobalVariables.Variables.ATTokenCred.secret);                    
                 }
 
-                string? vehicleGeneration = await ATConnect.Connect(webext, cookie, token.access_token);
+                string? vehicleGeneration = await ATConnect.Connect(WebSite: webext, Token: token.access_token);
 
                 VehicleGenerations? vehgen = JsonSerializer.Deserialize<VehicleGenerations?>(
                     json: vehicleGeneration,

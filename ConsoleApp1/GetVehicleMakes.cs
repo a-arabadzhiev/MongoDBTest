@@ -31,7 +31,7 @@ namespace ATTaxonomyVehicleMakes
             string? webext = "makes?vehicleType=" + vt.name + "&advertiserId=" + advertiserid;
             string? cookie = "__cf_bm=B6mel2RAr2Y8bJ_YC12yGM72Fz992ZOgK4NdAQIY3qQ-1718109215-1.0.1.1-UBKCntQDCf.gtz4TRb93MxGrFR.aGSkdL8P4mtAD16PxCY1ZzAzjuMOEV3gmMVnclxTq_BvbH7gTIH7Bz6k2BA";
 
-            string? vehicleMake = await ATConnect.Connect(webext, cookie, null);
+            string? vehicleMake = await ATConnect.Connect(WebSite: webext, Token: null);
 
             VehicleMake? vehiclemakes = JsonSerializer.Deserialize<VehicleMake?>(
                 json: vehicleMake,

@@ -27,7 +27,9 @@ namespace ATTaxonomyVehicleDerivatives
                                 json: vehgen,
                                 options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
-            AccessToken? token = await GetToken.Conn();
+            AccessToken? token = await GetToken.Conn(website: GlobalVariables.Variables.ATTokenCred.website,
+                                                     key: GlobalVariables.Variables.ATTokenCred.key,
+                                                     secret: GlobalVariables.Variables.ATTokenCred.secret);
 
             foreach (var generationId in vg.generationId)
             {
@@ -36,10 +38,12 @@ namespace ATTaxonomyVehicleDerivatives
 
                 if (token.expires_at <= DateTime.Now.AddMinutes(2))
                 {
-                    token = await GetToken.Conn();
+                    token = await GetToken.Conn(website: GlobalVariables.Variables.ATTokenCred.website,
+                                                key: GlobalVariables.Variables.ATTokenCred.key,
+                                                secret: GlobalVariables.Variables.ATTokenCred.secret);
                 }
 
-                string? vehicleDerivatives = await ATConnect.Connect(webext, cookie, token.access_token);
+                string? vehicleDerivatives = await ATConnect.Connect(WebSite: webext, Token: token.access_token);
 
                 VehicleDerivative? vehder = JsonSerializer.Deserialize<VehicleDerivative?>(
                     json: vehicleDerivatives,

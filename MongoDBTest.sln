@@ -8,24 +8,55 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9776B55B-B861-4E9F-B874-E91CC5EE71C9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATTaxonomyVehicleTypes", "ATTaxonomyVehicleTypes\ATTaxonomyVehicleTypes.csproj", "{AC4A4C05-F1C7-4BCC-9A76-B99AF3A3B9E8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A140A03B-6DEE-4640-9194-85124850B361} = {A140A03B-6DEE-4640-9194-85124850B361}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATTaxonomyVehicleMakes", "ConsoleApp1\ATTaxonomyVehicleMakes.csproj", "{FC747A17-1A83-4291-B5AC-C87126CAABBB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A140A03B-6DEE-4640-9194-85124850B361} = {A140A03B-6DEE-4640-9194-85124850B361}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATTaxonomyVehicleModels", "ConsoleApp2\ATTaxonomyVehicleModels.csproj", "{1FB5AC3A-0591-4018-8633-F1D4361574B6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A140A03B-6DEE-4640-9194-85124850B361} = {A140A03B-6DEE-4640-9194-85124850B361}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATTaxonomyVehicleGenerations", "GetGenerations\ATTaxonomyVehicleGenerations.csproj", "{5E747E4D-A80F-47F8-B085-8045B61750EE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A140A03B-6DEE-4640-9194-85124850B361} = {A140A03B-6DEE-4640-9194-85124850B361}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATTaxonomyVehicleDerivatives", "ATTaxonomyVehicleDerivatives\ATTaxonomyVehicleDerivatives.csproj", "{7F66D3D8-301D-4591-8540-4BED54619909}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A140A03B-6DEE-4640-9194-85124850B361} = {A140A03B-6DEE-4640-9194-85124850B361}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATToken", "ConsoleApp3\ATToken.csproj", "{7C7C9513-5E21-4F43-B2F9-9641DEFA5791}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A140A03B-6DEE-4640-9194-85124850B361} = {A140A03B-6DEE-4640-9194-85124850B361}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATTaxonomyVehicleTechnicalData", "ATTechnicalData\ATTaxonomyVehicleTechnicalData.csproj", "{FA8E8C8F-D066-44C0-A0D2-740DF3803335}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A140A03B-6DEE-4640-9194-85124850B361} = {A140A03B-6DEE-4640-9194-85124850B361}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATConnection", "ATConnection\ATConnection.csproj", "{9B9C43BE-41FB-4423-9764-6ABFB801C2C2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A140A03B-6DEE-4640-9194-85124850B361} = {A140A03B-6DEE-4640-9194-85124850B361}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MDBInsertDocument", "MDBConnection\MDBInsertDocument.csproj", "{F5B6E88C-4DF8-47E3-A9DF-9D6BEC4D8253}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MDBFindData", "MDBGetData\MDBFindData.csproj", "{FDFB1DE5-FD9D-40F6-AB53-0A26B852207F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A140A03B-6DEE-4640-9194-85124850B361} = {A140A03B-6DEE-4640-9194-85124850B361}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalVariables", "GlobalVariables\GlobalVariables.csproj", "{A140A03B-6DEE-4640-9194-85124850B361}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipeLine", "PipeLine\PipeLine.csproj", "{125623CC-0251-491C-AA8A-0A4A99DF16B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +104,14 @@ Global
 		{FDFB1DE5-FD9D-40F6-AB53-0A26B852207F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDFB1DE5-FD9D-40F6-AB53-0A26B852207F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDFB1DE5-FD9D-40F6-AB53-0A26B852207F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A140A03B-6DEE-4640-9194-85124850B361}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A140A03B-6DEE-4640-9194-85124850B361}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A140A03B-6DEE-4640-9194-85124850B361}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A140A03B-6DEE-4640-9194-85124850B361}.Release|Any CPU.Build.0 = Release|Any CPU
+		{125623CC-0251-491C-AA8A-0A4A99DF16B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{125623CC-0251-491C-AA8A-0A4A99DF16B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{125623CC-0251-491C-AA8A-0A4A99DF16B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{125623CC-0251-491C-AA8A-0A4A99DF16B9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

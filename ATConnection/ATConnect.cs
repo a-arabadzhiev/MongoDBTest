@@ -2,21 +2,21 @@
 
 namespace ATConnection
 {
-    public class ATConnect(string? webext, string? cookie, string? token)
+    public class ATConnect(string? WebSite, string? Token)
     {
-        public static async Task<string?> Connect(string? webext, string? cookie, string? token)
+        public static async Task<string?> Connect(string? WebSite, string? Token)
         {
-            string? requesturl = "https://api-sandbox.autotrader.co.uk/taxonomy/" + webext;
-
-            if (token == null)
+            if (Token == null)
             {
-                AccessToken? tkn = await GetToken.Conn();
+                AccessToken? ATToken = await GetToken.Conn(website: GlobalVariables.Variables.ATTokenCred.website,
+                                                           key: GlobalVariables.Variables.ATTokenCred.key,
+                                                           secret: GlobalVariables.Variables.ATTokenCred.secret);
 
                 var client = new HttpClient();
-                var request = new HttpRequestMessage(HttpMethod.Get, requesturl);
-                request.Headers.Add("Authorization", "Bearer " + tkn.access_token);
+                var request = new HttpRequestMessage(HttpMethod.Get, WebSite);
+                request.Headers.Add("Authorization", "Bearer " + ATToken.access_token);
                 request.Headers.Add("cpntent-type", "application/json");
-                request.Headers.Add("Cookie", cookie);
+                request.Headers.Add("Cookie", GlobalVariables.Variables.ATTaxonomyReq.cookie);
                 var response = await client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
 
@@ -24,15 +24,15 @@ namespace ATConnection
 
                 return VehData;
             }
-            else 
-            { 
-                string? tkn1 = token;
+            else
+            {
+                string? ATToken = Token;
 
                 var client = new HttpClient();
-                var request = new HttpRequestMessage(HttpMethod.Get, requesturl);
-                request.Headers.Add("Authorization", "Bearer " + tkn1);
+                var request = new HttpRequestMessage(HttpMethod.Get, WebSite);
+                request.Headers.Add("Authorization", "Bearer " + ATToken);
                 request.Headers.Add("cpntent-type", "application/json");
-                request.Headers.Add("Cookie", cookie);
+                request.Headers.Add("Cookie", GlobalVariables.Variables.ATTaxonomyReq.cookie);
                 var response = await client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
 
@@ -41,6 +41,14 @@ namespace ATConnection
                 return VehData;
             }
         }
-        public static void Main() { }
+        public static async Task Main()
+        {
+            //AccessToken? ATToken = await GetToken.Conn(website: GlobalVariables.Variables.ATTokenCred.website, 
+                                                   //key: GlobalVariables.Variables.ATTokenCred.key, 
+                                                   //secret: GlobalVariables.Variables.ATTokenCred.secret);
+
+            //await ATConnect.Connect(WebSite: "https://api-sandbox.autotrader.co.uk/taxonomy/vehicleTypes?advertiserId=66945",
+            //                        Token: ATToken.access_token);
+        }
     }
 }

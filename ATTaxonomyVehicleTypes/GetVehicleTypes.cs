@@ -1,4 +1,4 @@
-﻿using ATConnection;
+﻿using ATToken;
 using MDBInsertDocument;
 using MongoDB.Bson;
 using System.Text.Json;
@@ -7,13 +7,27 @@ namespace ATTaxonomyVehicleTypes
 {
     public class GetVehicleTypes
     {
-        public static async Task Main()
+        public static void Main()
         {
-            string? advertiserid = "66945";
-            string? webext = "vehicleTypes?advertiserId=" + advertiserid;
-            string? cookie = "__cf_bm=Rucph7ECriCdynJnhNow.vQ6YTW8hhUz_aHgRq0gJiA-1728326592-1.0.1.1-ka7pDua0XBYxhLQhFZxc8f_L4Zj99inX1wnAo56YeXzQ22oFjZb9XE7nwPt2jIGHSFPFJxBdbyLzkc10K_LN2Q";
+            GetVehicleType(WebSite: GlobalVariables.Variables.GetVehicleTypesReq.WebSiteType);
+        }
 
-            string? vehtyp = await ATConnect.Connect(webext, cookie, null);
+        public static async void GetVehicleType(string? WebSite)
+        {
+            Console.WriteLine(WebSite);
+            Console.ReadLine();
+
+            //AccessToken? ATToken = await GetToken.Conn(website: GlobalVariables.Variables.ATTokenCred.website,
+            //                                           key: GlobalVariables.Variables.ATTokenCred.key,
+            //                                           secret: GlobalVariables.Variables.ATTokenCred.secret);
+
+            //Console.WriteLine(ATToken.access_token);
+            //Console.ReadLine();
+
+            string? vehtyp = await ATConnection.ATConnect.Connect(WebSite: WebSite, Token: ATToken.access_token);
+
+            Console.WriteLine(vehtyp);
+            Console.ReadLine();
 
             VehicleTypes? vehicletype = JsonSerializer.Deserialize<VehicleTypes?>(
                 json: vehtyp,
@@ -22,7 +36,7 @@ namespace ATTaxonomyVehicleTypes
             foreach (var name in vehicletype.vehicleTypes)
             {
                 var document = new BsonDocument
-                {                    
+                {
                     {"name", name.name}
                 };
 
