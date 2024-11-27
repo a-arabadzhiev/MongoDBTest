@@ -140,15 +140,15 @@ namespace PipeLine
             public class ATTokenCred
             {
                 //AT Token Variables
-                public static string? key = "eDynamix-StockMGT-Parkway-SB-05-09-24";
-                public static string? secret = "JUwLAeG8zzlnJE2jyKizp0mzeEcBD65Q";
+                public static string? key = "eDynamix-StockMGT-Parkway-SB-05-09-24"; //Get From SQL DataBase
+                public static string? secret = "JUwLAeG8zzlnJE2jyKizp0mzeEcBD65Q"; //Get From SQL DataBase
                 public static string? ATTokenURL = "https://api-sandbox.autotrader.co.uk/authenticate";
             }
 
             public class ATTaxonomyReq
             {
                 //AT Taxonomy Variables
-                public static string? advertiserid = "66945";
+                public static string? advertiserid = "66945"; //Get From SQL DataBase
                 public static string? cookie = "__cf_bm=Rucph7ECriCdynJnhNow.vQ6YTW8hhUz_aHgRq0gJiA-1728326592-1.0.1.1-ka7pDua0XBYxhLQhFZxc8f_L4Zj99inX1wnAo56YeXzQ22oFjZb9XE7nwPt2jIGHSFPFJxBdbyLzkc10K_LN2Q";
                 public static string? requesturl = "https://api-sandbox.autotrader.co.uk/taxonomy/";
             }
@@ -210,7 +210,7 @@ namespace PipeLine
                 public static string? APIVehTechDataUrl2 = "?advertiserId=" + ATTaxonomyReq.advertiserid;
             }
 
-            public static void Main() { }
+            //public static void Main() { }
         }
     }
 
@@ -247,12 +247,12 @@ namespace PipeLine
     
                 return null;
             }
-            public static void Main()
-            {
-                Token(ATTokenURL: GlobalVariables.Variables.ATTokenCred.ATTokenURL,
-                      key: GlobalVariables.Variables.ATTokenCred.key,
-                      secret: GlobalVariables.Variables.ATTokenCred.secret);
-            }
+            //public static void Main()
+            //{
+            //    Token(ATTokenURL: GlobalVariables.Variables.ATTokenCred.ATTokenURL,
+            //          key: GlobalVariables.Variables.ATTokenCred.key,
+            //          secret: GlobalVariables.Variables.ATTokenCred.secret);
+            //}
         }
     }
     
@@ -260,7 +260,7 @@ namespace PipeLine
     {
         public class ATConnect(string? ATApiUrl, string? Token)
         {
-            public static void Main() { }
+            //public static void Main() { }
 
             public static string? ATApiData(string? ATApiUrl, string? Token)
             {
@@ -293,7 +293,7 @@ namespace PipeLine
     {
         public class MDBGetData(string? CollectionName, string? Filter, string? Project)
         {
-            public static void Main() { }
+            //public static void Main() { }
 
             public static List<BsonDocument>? Find(string? CollectionName, string? Filter, string? Project)
             {
@@ -324,7 +324,7 @@ namespace PipeLine
     {
         public class MDBInsert(string? CollectionName, BsonDocument? Document)
         {
-            public static void Main() { }
+            //public static void Main() { }
 
             public static void InsertOne(string? CollectionName, BsonDocument? Document)
             {
@@ -349,10 +349,10 @@ namespace PipeLine
     {
         public class GetVehicleTypes
         {
-            public static void Main()
-            {
-                GetVehicleType(ATVehTypURL: GlobalVariables.Variables.GetVehicleTypesReq.ATVehTypURL);
-            }
+            //public static void Main()
+            //{
+            //    GetVehicleType(ATVehTypURL: GlobalVariables.Variables.GetVehicleTypesReq.ATVehTypURL);
+            //}
 
             public static void GetVehicleType(string? ATVehTypURL)
             {
@@ -393,10 +393,10 @@ namespace PipeLine
     {
         public class GetVehicleMakes
         {
-            public static void Main()
-            {
-                GetVehicleMake();
-            }
+            //public static void Main()
+            //{
+            //    GetVehicleMake();
+            //}
 
             public static void GetVehicleMake()
             {
@@ -452,10 +452,10 @@ namespace PipeLine
     {
         public class GetVehicleModels
         {
-            public static void Main()
-            {
-                GetVehicleModel();
-            }
+            //public static void Main()
+            //{
+            //    GetVehicleModel();
+            //}
 
             public static void GetVehicleModel()
             {
@@ -514,10 +514,10 @@ namespace PipeLine
     {
         public class GetVehicleGenerations
         {
-            public static void Main()
-            {
-                GetVehicleGeneration();
-            }
+            //public static void Main()
+            //{
+            //    GetVehicleGeneration();
+            //}
 
             public static void GetVehicleGeneration()
             {
@@ -583,10 +583,10 @@ namespace PipeLine
     {
         public class GetVehicleDerivatives
         {
-            public static void Main()
-            {
-                GetVehicleDerivative();
-            }
+            //public static void Main()
+            //{
+            //    GetVehicleDerivative();
+            //}
 
             public static void GetVehicleDerivative()
             {
@@ -652,10 +652,10 @@ namespace PipeLine
     {
         public class GetVehicleTechnicalData
         {
-            public static void Main()
-            {
-                GetVehicleTechData();
-            }
+            //public static void Main()
+            //{
+            //    GetVehicleTechData();
+            //}
 
             public static void GetVehicleTechData()
             {
