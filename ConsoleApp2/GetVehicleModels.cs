@@ -4,20 +4,22 @@ using MongoDB.Bson;
 using MDBFindData;
 using System.Text.Json;
 using MongoDB.Bson.Serialization;
+using ATToken;
 
 namespace ATTaxonomyVehicleModels
 {
     public class GetVehicleModels
     {
-        public static async Task Main()
+        public static void Main()
         {
-            string? advertiserid = "66945";
+            GetVehicleModel();
+        }
 
-            string? collection = "VehicleMakes";
-            string? project = "{makeId: 1, _id: 0}";
-            string? filter = "{}";
-
-            var vehiclemake = MDBGetData.Find(collection, filter, project);                                                                              
+        public static void GetVehicleModel()
+        {
+            var vehiclemake = MDBGetData.Find(CollectionName: GlobalVariables.Variables.GetVehicleModelsReq.collection, 
+                                              Filter: GlobalVariables.Variables.GetVehicleModelsReq.filter, 
+                                              Project: GlobalVariables.Variables.GetVehicleModelsReq.project);                                                                              
 
             string? vehmake = vehiclemake.Select(v => BsonSerializer.Deserialize<GetVehicleMakes>(v)).ToJson();
 
@@ -29,10 +31,15 @@ namespace ATTaxonomyVehicleModels
 
             foreach (var makeId in vm.makeId)
             {
-                string? webext = "models?makeId=" + makeId.makeId + "&advertiserId=" + advertiserid;
-                string? cookie = "__cf_bm=B6mel2RAr2Y8bJ_YC12yGM72Fz992ZOgK4NdAQIY3qQ-1718109215-1.0.1.1-UBKCntQDCf.gtz4TRb93MxGrFR.aGSkdL8P4mtAD16PxCY1ZzAzjuMOEV3gmMVnclxTq_BvbH7gTIH7Bz6k2BA";
+                string? APIVehModelUrl = GlobalVariables.Variables.GetVehicleModelsReq.APIVehModelUrl1 +
+                                         makeId.makeId +
+                                         GlobalVariables.Variables.GetVehicleModelsReq.APIVehModelUrl2;
 
-                string? vehicleModel = await ATConnect.Connect(WebSite: webext, Token: null);
+                AccessToken? ATToken = GetToken.Token(ATTokenURL: GlobalVariables.Variables.ATTokenCred.ATTokenURL,
+                                                      key: GlobalVariables.Variables.ATTokenCred.key,
+                                                      secret: GlobalVariables.Variables.ATTokenCred.secret);
+
+                string? vehicleModel = ATConnect.ATApiData(ATApiUrl: APIVehModelUrl, Token: ATToken.access_token);
 
                 VehicleModels? vehmod = JsonSerializer.Deserialize<VehicleModels?>(
                     json: vehicleModel,

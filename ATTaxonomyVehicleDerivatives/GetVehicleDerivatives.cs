@@ -9,41 +9,43 @@ using System.Text.Json;
 
 namespace ATTaxonomyVehicleDerivatives
 {
-    public class GetVehicleGenerations
+    public class GetVehicleDerivatives
     {
-        public static async Task Main()
+        public static void Main()
         {
-            string? collection = "VehicleGenerations";
-            string? project = "{generationId: 1, _id: 0 }";
-            string? filter = "{}";
+            GetVehicleDerivative();
+        }
 
-            List<BsonDocument>? vehiclegeneration = MDBGetData.Find(collection, filter, project);
+        public static void GetVehicleDerivative()
+        {
+            List<BsonDocument>? vehiclegeneration = MDBGetData.Find(CollectionName: GlobalVariables.Variables.GetVehicleDerivativesReq.collection, 
+                                                                    Filter: GlobalVariables.Variables.GetVehicleDerivativesReq.filter, 
+                                                                    Project: GlobalVariables.Variables.GetVehicleDerivativesReq.project);
 
             string? vehgen = vehiclegeneration.Select(v => BsonSerializer.Deserialize<GetVehicleGeneration?>(v)).ToJson();
 
             vehgen = "{\"generationId\":" + vehgen + "}";
 
             GetGenerationID? vg = JsonSerializer.Deserialize<GetGenerationID?>(
-                                json: vehgen,
-                                options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+                                      json: vehgen,
+                                      options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
-            AccessToken? token = await GetToken.Conn(website: GlobalVariables.Variables.ATTokenCred.website,
-                                                     key: GlobalVariables.Variables.ATTokenCred.key,
-                                                     secret: GlobalVariables.Variables.ATTokenCred.secret);
+            AccessToken? token = GetToken.Token(ATTokenURL: GlobalVariables.Variables.ATTokenCred.ATTokenURL,
+                                                key: GlobalVariables.Variables.ATTokenCred.key,
+                                                secret: GlobalVariables.Variables.ATTokenCred.secret);
 
             foreach (var generationId in vg.generationId)
             {
-                string? webext = "derivatives?generationId=" + generationId.generationId;
-                string? cookie = "__cf_bm=B6mel2RAr2Y8bJ_YC12yGM72Fz992ZOgK4NdAQIY3qQ-1718109215-1.0.1.1-UBKCntQDCf.gtz4TRb93MxGrFR.aGSkdL8P4mtAD16PxCY1ZzAzjuMOEV3gmMVnclxTq_BvbH7gTIH7Bz6k2BA";
+                string? APIVehDerUrl = GlobalVariables.Variables.GetVehicleDerivativesReq.APIVehDerUrl + generationId.generationId;
 
                 if (token.expires_at <= DateTime.Now.AddMinutes(2))
                 {
-                    token = await GetToken.Conn(website: GlobalVariables.Variables.ATTokenCred.website,
-                                                key: GlobalVariables.Variables.ATTokenCred.key,
-                                                secret: GlobalVariables.Variables.ATTokenCred.secret);
+                    token = GetToken.Token(ATTokenURL: GlobalVariables.Variables.ATTokenCred.ATTokenURL,
+                                           key: GlobalVariables.Variables.ATTokenCred.key,
+                                           secret: GlobalVariables.Variables.ATTokenCred.secret);
                 }
 
-                string? vehicleDerivatives = await ATConnect.Connect(WebSite: webext, Token: token.access_token);
+                string? vehicleDerivatives = ATConnect.ATApiData(ATApiUrl: APIVehDerUrl, Token: token.access_token);
 
                 VehicleDerivative? vehder = JsonSerializer.Deserialize<VehicleDerivative?>(
                     json: vehicleDerivatives,

@@ -11,13 +11,16 @@ namespace ATTaxonomyVehicleGenerations
 {
     public class GetVehicleGenerations
     {
-        public static async Task Main()
+        public static void Main()
         {
-            string? collection = "VehicleModels";
-            string? project = "{modelId: 1, _id: 0 }";
-            string? filter = "{}";
+            GetVehicleGeneration();
+        }
 
-            List<BsonDocument>? vehiclemodel = MDBGetData.Find(collection, filter, project);
+        public static void GetVehicleGeneration()
+        {
+            List<BsonDocument>? vehiclemodel = MDBGetData.Find(CollectionName: GlobalVariables.Variables.GetVehicleGenerationsReq.collection, 
+                                                               Filter: GlobalVariables.Variables.GetVehicleGenerationsReq.filter, 
+                                                               Project: GlobalVariables.Variables.GetVehicleGenerationsReq.project);
 
             string? vehmod = vehiclemodel.Select(v => BsonSerializer.Deserialize<GetVehicleModel?>(v)).ToJson();
 
@@ -28,24 +31,23 @@ namespace ATTaxonomyVehicleGenerations
                                 options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
             
             DateTime? expires = DateTime.Now;
-            AccessToken? token = await GetToken.Conn(website: GlobalVariables.Variables.ATTokenCred.website,
-                                                     key: GlobalVariables.Variables.ATTokenCred.key,
-                                                     secret: GlobalVariables.Variables.ATTokenCred.secret);
+            AccessToken? token = GetToken.Token(ATTokenURL: GlobalVariables.Variables.ATTokenCred.ATTokenURL,
+                                           key: GlobalVariables.Variables.ATTokenCred.key,
+                                           secret: GlobalVariables.Variables.ATTokenCred.secret);
 
             foreach (var modelId in vm.modelId)
             {
-                string? webext = "generations?modelId=" + modelId.modelId;
-                string? cookie = "__cf_bm=B6mel2RAr2Y8bJ_YC12yGM72Fz992ZOgK4NdAQIY3qQ-1718109215-1.0.1.1-UBKCntQDCf.gtz4TRb93MxGrFR.aGSkdL8P4mtAD16PxCY1ZzAzjuMOEV3gmMVnclxTq_BvbH7gTIH7Bz6k2BA";
+                string? APIVehGenUrl = GlobalVariables.Variables.GetVehicleGenerationsReq.APIVehGenUrl + modelId.modelId;
 
                 if (token.expires_at <= expires)
                 {
                     expires = DateTime.Now;
-                    token = await GetToken.Conn(website: GlobalVariables.Variables.ATTokenCred.website,
-                                                key: GlobalVariables.Variables.ATTokenCred.key,
-                                                secret: GlobalVariables.Variables.ATTokenCred.secret);                    
+                    token = GetToken.Token(ATTokenURL: GlobalVariables.Variables.ATTokenCred.ATTokenURL,
+                                           key: GlobalVariables.Variables.ATTokenCred.key,
+                                           secret: GlobalVariables.Variables.ATTokenCred.secret);
                 }
 
-                string? vehicleGeneration = await ATConnect.Connect(WebSite: webext, Token: token.access_token);
+                string? vehicleGeneration = ATConnect.ATApiData(ATApiUrl: APIVehGenUrl, Token: token.access_token);
 
                 VehicleGenerations? vehgen = JsonSerializer.Deserialize<VehicleGenerations?>(
                     json: vehicleGeneration,

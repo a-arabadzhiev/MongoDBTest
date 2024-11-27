@@ -15,8 +15,7 @@ namespace GlobalVariables
             //AT Token Variables
             public static string? key = "eDynamix-StockMGT-Parkway-SB-05-09-24";
             public static string? secret = "JUwLAeG8zzlnJE2jyKizp0mzeEcBD65Q";
-            public static string? website = "https://api-sandbox.autotrader.co.uk/authenticate";
-            //public static string? tkn_cookie = /*""__cf_bm=5W2rudDPaI0qejVjtFPlctGFc3fsJehaHGXigl8Tdgo-1731061275-1.0.1.1-zriKztazmXluJf2SJdphY5KuIuWbyASfBr7a7LRR_pjuYEy3luqmbuEyTC6MdsSj5z_HZb341Bq6FJSGJI56UQ"*/;
+            public static string? ATTokenURL = "https://api-sandbox.autotrader.co.uk/authenticate";
         }
 
         public class ATTaxonomyReq
@@ -30,9 +29,58 @@ namespace GlobalVariables
         public class GetVehicleTypesReq
         {
             //GetVehicleTypes
-            public static string? WebSiteType = ATTaxonomyReq.requesturl + 
+            public static string? ATVehTypURL = ATTaxonomyReq.requesturl + 
                                                 "vehicleTypes?advertiserId=" + 
                                                 ATTaxonomyReq.advertiserid;
+        }
+
+        public class GetVehicleMakesReq
+        {
+            //GetVehicleMakes
+            public static string? type = "Car";
+            public static string? collection = "VehicleTypes";
+            public static string? project = "{ _id : 0 }";
+            public static string? filter = "{name: \"" + type + "\" }";
+            public static string? ATVehMakeURL1 = ATTaxonomyReq.requesturl + "makes?vehicleType=";
+            public static string? ATVehMakeURL2 = "&advertiserId=" + ATTaxonomyReq.advertiserid;
+        }
+        
+        public class GetVehicleModelsReq
+        {
+            //GetVehicleModels
+            public static string? collection = "VehicleMakes";
+            public static string? project = "{makeId: 1, _id: 0}";
+            public static string? filter = "{}";
+            public static string? APIVehModelUrl1 = ATTaxonomyReq.requesturl + "models?makeId=";
+            public static string? APIVehModelUrl2 = "&advertiserId=" + ATTaxonomyReq.advertiserid;
+        }
+
+        public class GetVehicleGenerationsReq
+        {
+            //GetVehicleGenerations
+            public static string? collection = "VehicleModels";
+            public static string? project = "{modelId: 1, _id: 0 }";
+            public static string? filter = "{}";
+            public static string? APIVehGenUrl = ATTaxonomyReq.requesturl + "generations?modelId=";
+        }
+
+        public class GetVehicleDerivativesReq
+        {
+            //GetVehicleDerivatives
+            public static string? collection = "VehicleGenerations";
+            public static string? project = "{generationId: 1, _id: 0 }";
+            public static string? filter = "{}";
+            public static string? APIVehDerUrl = ATTaxonomyReq.requesturl + "derivatives?generationId=";
+        }
+
+        public class GetVehicleTechDataReq
+        {
+            //GetVehicleTechnicalData
+            public static string? collection = "VehicleDerivatives";
+            public static string? project = "{derivativeId: 1, _id: 0 }";
+            public static string? filter = "{}";
+            public static string? APIVehTechDataUrl1 = ATTaxonomyReq.requesturl + "derivatives/";
+            public static string? APIVehTechDataUrl2 = "?advertiserId=" + ATTaxonomyReq.advertiserid;
         }
 
         public static void Main() { }

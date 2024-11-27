@@ -4,21 +4,22 @@ using MongoDB.Bson;
 using MDBFindData;
 using System.Text.Json;
 using MongoDB.Bson.Serialization;
+using ATToken;
 
 namespace ATTaxonomyVehicleMakes
 {
     public class GetVehicleMakes
     {
-        public static async Task Main()
+        public static void Main() 
         {
-            string? advertiserid = "66945";
-            string? type = "Car";
+            GetVehicleMake();
+        }
 
-            string? collection = "VehicleTypes";
-            string? project = "{ _id : 0 }";
-            string? filter = "{name: \"" + type + "\" }";
-
-            var vehicletype = MDBGetData.Find(collection, filter, project);
+        public static void GetVehicleMake()
+        {
+            var vehicletype = MDBGetData.Find(CollectionName: GlobalVariables.Variables.GetVehicleMakesReq.collection, 
+                                              Filter: GlobalVariables.Variables.GetVehicleMakesReq.filter, 
+                                              Project: GlobalVariables.Variables.GetVehicleMakesReq.project);
 
             string? vehtyp = vehicletype.Select(v => BsonSerializer.Deserialize<GetVehicleType>(v)).ToJson()
                                                                                                    .Replace("[", "")
@@ -28,10 +29,15 @@ namespace ATTaxonomyVehicleMakes
                                 json: vehtyp,
                                 options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
-            string? webext = "makes?vehicleType=" + vt.name + "&advertiserId=" + advertiserid;
-            string? cookie = "__cf_bm=B6mel2RAr2Y8bJ_YC12yGM72Fz992ZOgK4NdAQIY3qQ-1718109215-1.0.1.1-UBKCntQDCf.gtz4TRb93MxGrFR.aGSkdL8P4mtAD16PxCY1ZzAzjuMOEV3gmMVnclxTq_BvbH7gTIH7Bz6k2BA";
+            string? APIVehMakeUrl = GlobalVariables.Variables.GetVehicleMakesReq.ATVehMakeURL1 + 
+                             vt.name + 
+                             GlobalVariables.Variables.GetVehicleMakesReq.ATVehMakeURL2;
 
-            string? vehicleMake = await ATConnect.Connect(WebSite: webext, Token: null);
+            AccessToken? ATToken = GetToken.Token(ATTokenURL: GlobalVariables.Variables.ATTokenCred.ATTokenURL,
+                                                      key: GlobalVariables.Variables.ATTokenCred.key,
+                                                      secret: GlobalVariables.Variables.ATTokenCred.secret);
+
+            string? vehicleMake = ATConnect.ATApiData(ATApiUrl: APIVehMakeUrl, Token: ATToken.access_token);
 
             VehicleMake? vehiclemakes = JsonSerializer.Deserialize<VehicleMake?>(
                 json: vehicleMake,

@@ -11,13 +11,16 @@ namespace ATTaxonomyVehicleTechnicalData
 {
     public class GetVehicleTechnicalData
     {
-        public static async Task Main()
+        public static void Main()
         {
-            string? collection = "VehicleDerivatives";
-            string? project = "{derivativeId: 1, _id: 0 }";
-            string? filter = "{}";
+            GetVehicleTechData();
+        }
 
-            List<BsonDocument>? vehiclegeneration = MDBGetData.Find(collection, filter, project);
+        public static void GetVehicleTechData()
+        {
+            List<BsonDocument>? vehiclegeneration = MDBGetData.Find(CollectionName: GlobalVariables.Variables.GetVehicleTechDataReq.collection, 
+                                                                    Filter: GlobalVariables.Variables.GetVehicleTechDataReq.filter, 
+                                                                    Project: GlobalVariables.Variables.GetVehicleTechDataReq.project);
 
             string? vehder = vehiclegeneration.Select(v => BsonSerializer.Deserialize<GetVehicleDerivative?>(v)).ToJson();
 
@@ -27,25 +30,24 @@ namespace ATTaxonomyVehicleTechnicalData
                                 json: vehder,
                                 options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
-            AccessToken? token = await GetToken.Conn(website: GlobalVariables.Variables.ATTokenCred.website,
-                                                     key: GlobalVariables.Variables.ATTokenCred.key,
-                                                     secret: GlobalVariables.Variables.ATTokenCred.secret);
+            AccessToken? token = GetToken.Token(ATTokenURL: GlobalVariables.Variables.ATTokenCred.ATTokenURL,
+                                                      key: GlobalVariables.Variables.ATTokenCred.key,
+                                                      secret: GlobalVariables.Variables.ATTokenCred.secret);
 
             foreach (var derivativeId in vg.derivativeId)
             {
-                string? advertiserid = "66945";
-
-                string? webext = "derivatives/" + derivativeId.derivativeId + "?advertiserId=" + advertiserid;
-                string? cookie = "__cf_bm=B6mel2RAr2Y8bJ_YC12yGM72Fz992ZOgK4NdAQIY3qQ-1718109215-1.0.1.1-UBKCntQDCf.gtz4TRb93MxGrFR.aGSkdL8P4mtAD16PxCY1ZzAzjuMOEV3gmMVnclxTq_BvbH7gTIH7Bz6k2BA";
+                string? APITechDataUrl = GlobalVariables.Variables.GetVehicleTechDataReq.APIVehTechDataUrl1 + 
+                                         derivativeId.derivativeId + 
+                                         GlobalVariables.Variables.GetVehicleTechDataReq.APIVehTechDataUrl2;
 
                 if (token.expires_at <= DateTime.Now.AddMinutes(2))
                 {
-                    token = await GetToken.Conn(website: GlobalVariables.Variables.ATTokenCred.website,
-                                                key: GlobalVariables.Variables.ATTokenCred.key,
-                                                secret: GlobalVariables.Variables.ATTokenCred.secret);
+                    token = GetToken.Token(ATTokenURL: GlobalVariables.Variables.ATTokenCred.ATTokenURL,
+                                                      key: GlobalVariables.Variables.ATTokenCred.key,
+                                                      secret: GlobalVariables.Variables.ATTokenCred.secret);
                 }
 
-                string? vehicleTechnicalData = await ATConnect.Connect(WebSite: webext, Token: token.access_token);
+                string? vehicleTechnicalData = ATConnect.ATApiData(ATApiUrl: APITechDataUrl, Token: token.access_token);
 
                 var document = BsonDocument.Parse(vehicleTechnicalData);
 
